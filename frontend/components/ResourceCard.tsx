@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { Play, BookOpen, Gamepad2, FileText, Headphones, Clock, CheckCircle } from 'lucide-react';
-import { Resource, ResourceType } from '../../lib/mockData';
-import { Card, Badge } from './shared';
+import { Resource, ResourceType } from '../lib/mockData';
+import { Card, Badge } from './ui/shared';
 
 interface ResourceCardProps {
   resource: Resource;

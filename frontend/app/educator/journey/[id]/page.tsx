@@ -3,9 +3,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft, Share2, RefreshCw, Save, CheckCircle, Copy } from 'lucide-react';
-import { Button, Card, Badge } from '../../../components/ui/shared';
-import { ResourceCard } from '../../../components/ResourceCard';
-import { LearningJourney, saveJourney, resourceLibrary, Resource } from '../../../lib/mockData';
+import { Button, Card, Badge } from '../../../../components/ui/shared';
+import { ResourceCard } from '../../../../components/ResourceCard';
+import { LearningJourney, saveJourney, resourceLibrary, Resource } from '../../../../lib/mockData';
 
 export default function JourneyPreview() {
   const params = useParams();

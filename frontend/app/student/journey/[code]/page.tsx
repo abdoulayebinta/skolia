@@ -3,8 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { ChevronRight, ChevronLeft, CheckCircle, Play, BookOpen, Gamepad2, RotateCcw, Home } from 'lucide-react';
-import { Button, Card } from '../../../components/ui/shared';
-import { getJourneyByCode, LearningJourney, Resource } from '../../../lib/mockData';
+import { Button, Card } from '../../../../components/ui/shared';
+import { getJourneyByCode, LearningJourney, Resource } from '../../../../lib/mockData';
 
 export default function StudentPlayer() {
   const params = useParams();

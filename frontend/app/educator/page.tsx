@@ -46,7 +46,7 @@ export default function EducatorBuilder() {
               <ArrowLeft className="w-4 h-4 mr-2" /> Back
             </Button>
             <span className="font-bold text-lg bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
-              Journey Builder
+              CurriculaMap
             </span>
           </div>
           <div className="text-sm text-slate-500">

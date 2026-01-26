@@ -19,7 +19,7 @@ export default function LandingPage() {
         {/* Hero Badge */}
         <div className="inline-flex items-center px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-xl mb-8 animate-fade-in-up">
           <Sparkles className="w-4 h-4 text-yellow-400 mr-2" />
-          <span className="text-sm font-medium text-slate-200">AI-Powered Learning Journeys</span>
+          <span className="text-sm font-medium text-slate-200">CurriculaMap: AI-Powered Learning Journeys</span>
         </div>
 
         {/* Hero Title */}
@@ -29,7 +29,7 @@ export default function LandingPage() {
         </h1>
 
         <p className="text-lg md:text-xl text-slate-400 max-w-2xl mb-12 leading-relaxed animate-fade-in-up delay-200">
-          Generate curriculum-aligned learning journeys in under 2 minutes. 
+          Generate curriculum-aligned learning journeys in under 2 minutes with CurriculaMap. 
           Secure, culturally relevant, and designed for the modern classroom.
         </p>
 

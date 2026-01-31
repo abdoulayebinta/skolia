@@ -21,7 +21,9 @@ export default function StudentPlayer() {
       const foundJourney = getJourneyByCode(code);
       
       if (foundJourney) {
-        setJourney(foundJourney);
+        // Filter out teacher resources for the student view
+        const studentSteps = foundJourney.steps.filter(step => step.resource.audience === 'Student');
+        setJourney({ ...foundJourney, steps: studentSteps });
       } else {
         // Handle invalid code
         router.push('/student');

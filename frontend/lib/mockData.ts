@@ -19,7 +19,7 @@ export interface Resource {
 }
 
 export interface JourneyStep {
-  stepType: 'Hook' | 'Instruction' | 'Application';
+  stepType: 'Preparation' | 'Hook' | 'Instruction' | 'Application';
   resource: Resource;
 }
 
@@ -29,7 +29,6 @@ export interface LearningJourney {
   grade: number;
   subject: string;
   steps: JourneyStep[];
-  teacherTool?: Resource; // New field for the pedagogical tool
   createdAt: string;
   classCode?: string;
 }
@@ -301,18 +300,23 @@ export const generateJourneyFromPrompt = async (prompt: string): Promise<Learnin
   // Select a teacher tool
   const teacherTool = teacherResources.length > 0 ? teacherResources[0] : undefined;
 
+  const steps: JourneyStep[] = [];
+  
+  if (teacherTool) {
+    steps.push({ stepType: 'Preparation', resource: teacherTool });
+  }
+  
+  steps.push({ stepType: 'Hook', resource: hook });
+  steps.push({ stepType: 'Instruction', resource: instruction });
+  steps.push({ stepType: 'Application', resource: application });
+
   return {
     id: `journey-${Date.now()}`,
     title: `Learning Journey: ${prompt.substring(0, 30)}${prompt.length > 30 ? '...' : ''}`,
     grade: 5,
     subject: subject,
     createdAt: new Date().toISOString(),
-    teacherTool: teacherTool,
-    steps: [
-      { stepType: 'Hook', resource: hook },
-      { stepType: 'Instruction', resource: instruction },
-      { stepType: 'Application', resource: application }
-    ]
+    steps: steps
   };
 };
 

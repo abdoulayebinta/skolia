@@ -1,11 +1,13 @@
 
-export type ResourceType = 'video' | 'article' | 'game' | 'book' | 'podcast' | 'worksheet';
+export type ResourceType = 'video' | 'article' | 'game' | 'book' | 'podcast' | 'worksheet' | 'guide' | 'sequence' | 'thematic_file';
+export type Audience = 'Student' | 'Teacher';
 
 export interface Resource {
   id: string;
   title: string;
   description: string;
   type: ResourceType;
+  audience: Audience;
   duration: string; // e.g., "5 min", "10 pages"
   subject: 'Science' | 'English' | 'French' | 'Math' | 'History';
   grade: number;
@@ -27,18 +29,61 @@ export interface LearningJourney {
   grade: number;
   subject: string;
   steps: JourneyStep[];
+  teacherTool?: Resource; // New field for the pedagogical tool
   createdAt: string;
   classCode?: string;
 }
 
 // Mock Database of Resources
 export const resourceLibrary: Resource[] = [
+  // TEACHER TOOLS
+  {
+    id: 'tch-001',
+    title: 'Thematic File: Ecosystems & Interactions',
+    description: 'A comprehensive guide for teaching ecosystems, including misconceptions, key vocabulary, and assessment rubrics.',
+    type: 'thematic_file',
+    audience: 'Teacher',
+    duration: '15 pages',
+    subject: 'Science',
+    grade: 5,
+    tags: ['guide', 'pedagogy', 'ecosystems'],
+    alignmentScore: 100,
+    culturalRelevance: false
+  },
+  {
+    id: 'tch-002',
+    title: 'Sequence Guide: Indigenous Storytelling',
+    description: 'Pedagogical framework for introducing oral traditions respectfully in the classroom.',
+    type: 'sequence',
+    audience: 'Teacher',
+    duration: '8 pages',
+    subject: 'English',
+    grade: 5,
+    tags: ['guide', 'indigenous', 'storytelling'],
+    alignmentScore: 100,
+    culturalRelevance: true
+  },
+  {
+    id: 'tch-003',
+    title: 'Guide Pédagogique: La Francophonie',
+    description: 'Strategies for teaching French culture and dialects to immersion students.',
+    type: 'guide',
+    audience: 'Teacher',
+    duration: '12 pages',
+    subject: 'French',
+    grade: 5,
+    tags: ['guide', 'francophonie', 'culture'],
+    alignmentScore: 100,
+    culturalRelevance: true
+  },
+
   // SCIENCE - PHOTOSYNTHESIS / PLANTS
   {
     id: 'sci-001',
     title: 'The Magic of Photosynthesis',
     description: 'An animated video explaining how plants convert sunlight into energy.',
     type: 'video',
+    audience: 'Student',
     duration: '4:30',
     subject: 'Science',
     grade: 5,
@@ -51,6 +96,7 @@ export const resourceLibrary: Resource[] = [
     title: 'Plant Cell Structures',
     description: 'Interactive diagram showing the parts of a plant cell.',
     type: 'article',
+    audience: 'Student',
     duration: '10 min',
     subject: 'Science',
     grade: 5,
@@ -63,6 +109,7 @@ export const resourceLibrary: Resource[] = [
     title: 'Grow Your Own Garden',
     description: 'A simulation game where students manage water and sunlight for plants.',
     type: 'game',
+    audience: 'Student',
     duration: '15 min',
     subject: 'Science',
     grade: 5,
@@ -75,6 +122,7 @@ export const resourceLibrary: Resource[] = [
     title: 'Indigenous Plant Medicine',
     description: 'Exploring how local indigenous communities use plants for healing.',
     type: 'video',
+    audience: 'Student',
     duration: '8:00',
     subject: 'Science',
     grade: 5,
@@ -89,6 +137,7 @@ export const resourceLibrary: Resource[] = [
     title: 'Journey to Mars',
     description: 'A documentary clip about the Mars rover missions.',
     type: 'video',
+    audience: 'Student',
     duration: '6:15',
     subject: 'Science',
     grade: 5,
@@ -101,6 +150,7 @@ export const resourceLibrary: Resource[] = [
     title: 'Solar System Builder',
     description: 'Drag and drop planets to create a solar system.',
     type: 'game',
+    audience: 'Student',
     duration: '20 min',
     subject: 'Science',
     grade: 5,
@@ -115,6 +165,7 @@ export const resourceLibrary: Resource[] = [
     title: 'The Hero\'s Journey',
     description: 'Understanding the structure of epic myths and stories.',
     type: 'video',
+    audience: 'Student',
     duration: '5:00',
     subject: 'English',
     grade: 5,
@@ -127,6 +178,7 @@ export const resourceLibrary: Resource[] = [
     title: 'Creative Writing Prompts',
     description: 'A collection of image-based prompts to spark story ideas.',
     type: 'worksheet',
+    audience: 'Student',
     duration: '30 min',
     subject: 'English',
     grade: 5,
@@ -139,6 +191,7 @@ export const resourceLibrary: Resource[] = [
     title: 'Voices of the Land',
     description: 'Short stories from diverse Canadian authors about nature.',
     type: 'book',
+    audience: 'Student',
     duration: '15 pages',
     subject: 'English',
     grade: 5,
@@ -153,6 +206,7 @@ export const resourceLibrary: Resource[] = [
     title: 'Les Saisons (The Seasons)',
     description: 'Learn vocabulary related to the four seasons in French.',
     type: 'video',
+    audience: 'Student',
     duration: '3:45',
     subject: 'French',
     grade: 5,
@@ -165,6 +219,7 @@ export const resourceLibrary: Resource[] = [
     title: 'Cuisine Française',
     description: 'Read about traditional French dishes and ingredients.',
     type: 'article',
+    audience: 'Student',
     duration: '8 min',
     subject: 'French',
     grade: 5,
@@ -177,6 +232,7 @@ export const resourceLibrary: Resource[] = [
     title: 'Verb Conjugation Challenge',
     description: 'A fast-paced game to practice -ER verbs.',
     type: 'game',
+    audience: 'Student',
     duration: '10 min',
     subject: 'French',
     grade: 5,
@@ -189,6 +245,7 @@ export const resourceLibrary: Resource[] = [
     title: 'Contes Acadiens',
     description: 'Traditional Acadian folktales told by a local storyteller.',
     type: 'podcast',
+    audience: 'Student',
     duration: '12:00',
     subject: 'French',
     grade: 5,
@@ -210,8 +267,9 @@ export const generateJourneyFromPrompt = async (prompt: string): Promise<Learnin
   if (lowerPrompt.includes('french') || lowerPrompt.includes('francais')) subject = 'French';
   else if (lowerPrompt.includes('english') || lowerPrompt.includes('writing') || lowerPrompt.includes('reading')) subject = 'English';
   
-  // Filter resources by subject
-  let subjectResources = resourceLibrary.filter(r => r.subject === subject);
+  // Filter resources by subject and audience
+  let subjectResources = resourceLibrary.filter(r => r.subject === subject && r.audience === 'Student');
+  let teacherResources = resourceLibrary.filter(r => r.subject === subject && r.audience === 'Teacher');
   
   // Simple keyword matching for relevance
   const keywords = lowerPrompt.split(' ').filter(w => w.length > 3);
@@ -233,19 +291,15 @@ export const generateJourneyFromPrompt = async (prompt: string): Promise<Learnin
   scoredResources.sort((a, b) => b.score - a.score);
 
   // Select Hook, Instruction, Application
-  // Try to find different types if possible
-  
   const topResources = scoredResources.map(sr => sr.resource);
-  
-  // Fallback if no matches found, just take top 3 of subject
   const pool = topResources.length >= 3 ? topResources : subjectResources;
 
-  // Simple selection logic ensuring we have 3 items
-  // In a real app, this would be much smarter about types (Video -> Book -> Game)
-  
   const hook = pool.find(r => r.type === 'video' || r.type === 'game') || pool[0];
   const instruction = pool.find(r => r.id !== hook.id && (r.type === 'article' || r.type === 'book' || r.type === 'video')) || pool[1];
   const application = pool.find(r => r.id !== hook.id && r.id !== instruction.id && (r.type === 'game' || r.type === 'worksheet' || r.type === 'podcast')) || pool[2];
+
+  // Select a teacher tool
+  const teacherTool = teacherResources.length > 0 ? teacherResources[0] : undefined;
 
   return {
     id: `journey-${Date.now()}`,
@@ -253,6 +307,7 @@ export const generateJourneyFromPrompt = async (prompt: string): Promise<Learnin
     grade: 5,
     subject: subject,
     createdAt: new Date().toISOString(),
+    teacherTool: teacherTool,
     steps: [
       { stepType: 'Hook', resource: hook },
       { stepType: 'Instruction', resource: instruction },

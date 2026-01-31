@@ -35,9 +35,9 @@ export default function EducatorBuilder() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-[#0F172A] font-sans">
+    <div className="min-h-screen bg-gradient-to-b from-white to-[#00b6ff]/5 text-[#0F172A] font-sans">
       {/* Header */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
+      <header className="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-10 shadow-sm">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="sm" onClick={() => router.push('/')} className="text-slate-500 hover:text-[#0F172A]">
@@ -49,7 +49,7 @@ export default function EducatorBuilder() {
                 <BrainCircuit className="w-5 h-5 text-white" />
               </div>
               <span className="font-bold text-xl tracking-tight text-[#0F172A]">
-                IDÉLLIA
+                IDÉLL<span className="text-[#00b6ff]">IA</span>
               </span>
             </div>
           </div>
@@ -93,7 +93,7 @@ export default function EducatorBuilder() {
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 placeholder="Describe your lesson topic, grade level, and learning goals... (e.g., 'Create a 45-minute interactive lesson on the solar system for Grade 5, focusing on Mars exploration and including a hands-on activity.')"
-                className="w-full h-48 p-5 text-lg text-slate-700 placeholder:text-slate-400 bg-[#F8FAFC] rounded-xl border border-slate-200 focus:border-[#00b6ff] focus:ring-4 focus:ring-[#00b6ff]/10 outline-none resize-none transition-all duration-200 ease-in-out"
+                className="w-full h-48 p-5 text-lg text-slate-700 placeholder:text-slate-400 bg-[#F8FAFC] rounded-xl border border-slate-200 focus:border-[#00b6ff] focus:ring-4 focus:ring-[#00b6ff]/20 focus:shadow-[0_0_15px_rgba(0,182,255,0.15)] outline-none resize-none transition-all duration-200 ease-in-out"
                 maxLength={500}
                 disabled={isGenerating}
               />

@@ -1,4 +1,9 @@
 
+// Backend API URL from environment variable (Next.js automatically injects NEXT_PUBLIC_ vars)
+const API_URL = typeof window !== 'undefined'
+  ? (window as any).NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1'
+  : 'http://localhost:8000/api/v1';
+
 export type ResourceType = 'video' | 'article' | 'game' | 'book' | 'podcast' | 'worksheet' | 'guide' | 'sequence' | 'thematic_file';
 export type Audience = 'Student' | 'Teacher';
 
@@ -253,6 +258,23 @@ export const resourceLibrary: Resource[] = [
     culturalRelevance: true
   }
 ];
+
+// Backend health check function
+export const checkBackendHealth = async (): Promise<{ status: string; database: string; timestamp: string } | null> => {
+  try {
+    const response = await fetch('http://localhost:8000/healthz');
+    if (!response.ok) {
+      console.error('Backend health check failed:', response.statusText);
+      return null;
+    }
+    const data = await response.json();
+    console.log('Backend health check successful:', data);
+    return data;
+  } catch (error) {
+    console.error('Backend health check error:', error);
+    return null;
+  }
+};
 
 // Helper to simulate AI generation
 export const generateJourneyFromPrompt = async (prompt: string): Promise<LearningJourney> => {

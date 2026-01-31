@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ChevronRight, ChevronLeft, CheckCircle, Play, BookOpen, Gamepad2, RotateCcw, Home } from 'lucide-react';
-import { Button, Card } from '../../../../components/ui/shared';
+import { ChevronRight, ChevronLeft, CheckCircle, Play, BookOpen, Gamepad2, RotateCcw, Home, Star, Trophy, Sparkles } from 'lucide-react';
+import { Button } from '../../../../components/ui/shared';
 import { getJourneyByCode, LearningJourney, Resource } from '../../../../lib/mockData';
 
 export default function StudentPlayer() {
@@ -47,8 +47,8 @@ export default function StudentPlayer() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
+      <div className="min-h-screen bg-teal-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-teal-500"></div>
       </div>
     );
   }
@@ -57,35 +57,60 @@ export default function StudentPlayer() {
 
   if (completed) {
     return (
-      <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-4 text-center">
-        <div className="mb-8 relative">
-          <div className="absolute inset-0 bg-green-500 blur-2xl opacity-20 rounded-full animate-pulse"></div>
-          <div className="relative bg-gradient-to-br from-green-400 to-emerald-600 w-24 h-24 rounded-full flex items-center justify-center shadow-2xl shadow-green-500/30 animate-bounce">
-            <CheckCircle className="w-12 h-12 text-white" />
+      <div className="min-h-screen bg-gradient-to-b from-teal-50 to-orange-50 flex flex-col items-center justify-center p-4 text-center font-sans">
+        <div className="mb-8 relative animate-bounce">
+          <div className="absolute inset-0 bg-orange-400 blur-3xl opacity-30 rounded-full"></div>
+          <div className="relative bg-gradient-to-br from-orange-400 to-amber-500 w-32 h-32 rounded-full flex items-center justify-center shadow-2xl shadow-orange-500/40 border-4 border-white">
+            <Trophy className="w-16 h-16 text-white" />
+          </div>
+          <div className="absolute -top-2 -right-2">
+            <Star className="w-10 h-10 text-yellow-400 fill-yellow-400 animate-pulse" />
           </div>
         </div>
         
-        <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Journey Complete!</h1>
-        <p className="text-xl text-slate-400 mb-12 max-w-lg">
-          Great job! You've finished the "{journey.title}" learning journey.
+        <h1 className="text-4xl md:text-6xl font-extrabold text-teal-900 mb-4 tracking-tight">
+          Awesome Job!
+        </h1>
+        <p className="text-xl md:text-2xl text-teal-700 mb-8 max-w-lg font-medium">
+          You've completed the <span className="text-orange-600 font-bold">"{journey.title}"</span> journey.
         </p>
+
+        <div className="bg-white rounded-3xl p-8 shadow-xl shadow-teal-900/5 max-w-md w-full mb-10 border border-teal-100">
+          <h3 className="text-lg font-bold text-teal-800 mb-4 flex items-center justify-center">
+            <Sparkles className="w-5 h-5 mr-2 text-orange-500" />
+            What you learned
+          </h3>
+          <ul className="text-left space-y-3 text-teal-600">
+            <li className="flex items-start">
+              <CheckCircle className="w-5 h-5 mr-3 text-teal-500 flex-shrink-0 mt-0.5" />
+              <span>Explored key concepts in {journey.subject}</span>
+            </li>
+            <li className="flex items-start">
+              <CheckCircle className="w-5 h-5 mr-3 text-teal-500 flex-shrink-0 mt-0.5" />
+              <span>Completed {journey.steps.length} interactive activities</span>
+            </li>
+            <li className="flex items-start">
+              <CheckCircle className="w-5 h-5 mr-3 text-teal-500 flex-shrink-0 mt-0.5" />
+              <span>Mastered new skills for Grade {journey.grade}</span>
+            </li>
+          </ul>
+        </div>
         
-        <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md">
           <Button 
             onClick={() => {
               setCompleted(false);
               setCurrentStep(0);
             }}
-            variant="secondary"
-            className="min-w-[160px]"
+            className="flex-1 bg-teal-600 hover:bg-teal-700 text-white py-4 rounded-xl font-bold text-lg shadow-lg shadow-teal-600/20 border-0"
           >
-            <RotateCcw className="w-4 h-4 mr-2" /> Start Again
+            <RotateCcw className="w-5 h-5 mr-2" /> Start Again
           </Button>
           <Button 
             onClick={() => router.push('/')}
-            className="bg-white/10 hover:bg-white/20 text-white border-0 min-w-[160px]"
+            className="flex-1 bg-white text-teal-700 hover:bg-teal-50 border-2 border-teal-100 py-4 rounded-xl font-bold text-lg"
           >
-            <Home className="w-4 h-4 mr-2" /> Back Home
+            <Home className="w-5 h-5 mr-2" /> Back Home
           </Button>
         </div>
       </div>
@@ -96,90 +121,105 @@ export default function StudentPlayer() {
   const stepType = journey.steps[currentStep].stepType;
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white flex flex-col">
-      {/* Progress Bar */}
-      <div className="h-2 bg-slate-800 w-full">
-        <div 
-          className="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-500 ease-out"
-          style={{ width: `${((currentStep + 1) / journey.steps.length) * 100}%` }}
-        ></div>
-      </div>
-
-      {/* Header */}
-      <header className="px-6 py-4 flex justify-between items-center border-b border-white/5 bg-slate-900/50 backdrop-blur-sm">
-        <div className="flex items-center">
-          <div className="mr-4 px-3 py-1 rounded-full bg-white/10 text-xs font-bold uppercase tracking-wider text-slate-300">
-            Step {currentStep + 1} of {journey.steps.length}
+    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
+      {/* Top Navigation Bar */}
+      <header className="bg-white border-b border-slate-200 sticky top-0 z-20 shadow-sm">
+        <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-teal-100 flex items-center justify-center text-teal-700 font-bold text-lg">
+              {currentStep + 1}
+            </div>
+            <div>
+              <h1 className="font-bold text-slate-900 text-sm md:text-base line-clamp-1">{journey.title}</h1>
+              <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">{stepType} Phase</div>
+            </div>
           </div>
-          <h2 className="font-semibold text-lg hidden md:block">{journey.title}</h2>
+          
+          <div className="flex items-center gap-2">
+            <div className="hidden md:flex items-center px-3 py-1 bg-orange-50 text-orange-700 rounded-full text-xs font-bold border border-orange-100">
+              <Clock className="w-3 h-3 mr-1.5" />
+              {currentResource.duration}
+            </div>
+          </div>
         </div>
-        <div className="text-sm font-medium text-purple-400">
-          {stepType} Phase
+
+        {/* Progress Bar */}
+        <div className="w-full h-1.5 bg-slate-100 flex">
+          {journey.steps.map((_, idx) => (
+            <div 
+              key={idx} 
+              className={`h-full flex-1 transition-all duration-500 ${
+                idx <= currentStep ? 'bg-teal-500' : 'bg-transparent'
+              } ${idx < journey.steps.length - 1 ? 'border-r border-white' : ''}`}
+            />
+          ))}
         </div>
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 flex flex-col items-center justify-center p-4 md:p-8 relative overflow-hidden">
-        {/* Background Ambient Light */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-purple-600/10 rounded-full blur-[100px] pointer-events-none"></div>
-
-        <div className="w-full max-w-4xl relative z-10">
-          <div className="bg-slate-800/50 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden shadow-2xl">
+      <main className="flex-1 flex flex-col items-center justify-center p-4 md:p-8 max-w-5xl mx-auto w-full">
+        
+        <div className="w-full bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-200 overflow-hidden flex flex-col h-[60vh] md:h-[70vh]">
+          {/* Content Viewer (Iframe Placeholder) */}
+          <div className="flex-1 bg-slate-900 relative group overflow-hidden">
+            {/* Simulated Content Background */}
+            <div className={`absolute inset-0 opacity-40 ${
+              currentResource.type === 'video' ? 'bg-red-900' : 
+              currentResource.type === 'game' ? 'bg-purple-900' : 
+              'bg-blue-900'
+            }`}></div>
             
-            {/* Resource Viewer Placeholder */}
-            <div className="aspect-video bg-slate-950 flex flex-col items-center justify-center relative group">
-              {/* Simulated Content */}
-              <div className="absolute inset-0 bg-gradient-to-br from-slate-900 to-slate-800 opacity-50"></div>
+            {/* Center Play Button / Icon */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-8 text-center z-10">
+              <div className="w-24 h-24 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center mb-6 border-2 border-white/20 shadow-2xl group-hover:scale-110 transition-transform duration-300 cursor-pointer">
+                {currentResource.type === 'video' && <Play className="w-10 h-10 ml-1" />}
+                {currentResource.type === 'game' && <Gamepad2 className="w-10 h-10" />}
+                {(currentResource.type === 'book' || currentResource.type === 'article') && <BookOpen className="w-10 h-10" />}
+                {currentResource.type === 'podcast' && <Headphones className="w-10 h-10" />}
+              </div>
               
-              <div className="relative z-10 text-center p-8">
-                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/10 mb-6 group-hover:scale-110 transition-transform duration-300 backdrop-blur-sm border border-white/10">
-                  {currentResource.type === 'video' && <Play className="w-8 h-8 text-white" />}
-                  {currentResource.type === 'game' && <Gamepad2 className="w-8 h-8 text-white" />}
-                  {(currentResource.type === 'book' || currentResource.type === 'article') && <BookOpen className="w-8 h-8 text-white" />}
-                </div>
-                
-                <h1 className="text-3xl md:text-4xl font-bold mb-4 text-white">{currentResource.title}</h1>
-                <p className="text-lg text-slate-300 max-w-2xl mx-auto mb-8 leading-relaxed">
-                  {currentResource.description}
-                </p>
-                
-                <div className="inline-flex items-center px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-sm text-slate-400">
-                  This is a placeholder for the actual {currentResource.type} content.
-                </div>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 drop-shadow-md">{currentResource.title}</h2>
+              <p className="text-lg text-white/80 max-w-2xl leading-relaxed drop-shadow-sm">
+                {currentResource.description}
+              </p>
+              
+              <div className="mt-8 px-6 py-2 bg-black/30 backdrop-blur-sm rounded-full text-sm font-medium border border-white/10">
+                Click to interact with this {currentResource.type}
               </div>
-            </div>
-
-            {/* Controls */}
-            <div className="p-6 md:p-8 bg-slate-900/30 border-t border-white/5 flex justify-between items-center">
-              <Button 
-                variant="ghost" 
-                onClick={handlePrev}
-                disabled={currentStep === 0}
-                className="text-slate-400 hover:text-white disabled:opacity-30"
-              >
-                <ChevronLeft className="w-5 h-5 mr-2" /> Previous
-              </Button>
-
-              <div className="flex gap-2">
-                {journey.steps.map((_, idx) => (
-                  <div 
-                    key={idx}
-                    className={`w-2.5 h-2.5 rounded-full transition-all ${
-                      idx === currentStep ? 'bg-purple-500 scale-125' : 'bg-slate-700'
-                    }`}
-                  />
-                ))}
-              </div>
-
-              <Button 
-                onClick={handleNext}
-                className="bg-white text-slate-900 hover:bg-slate-200 border-0 px-8"
-              >
-                {currentStep === journey.steps.length - 1 ? 'Finish' : 'Next'} <ChevronRight className="w-5 h-5 ml-2" />
-              </Button>
             </div>
           </div>
+
+          {/* Bottom Controls */}
+          <div className="h-20 bg-white border-t border-slate-100 flex items-center justify-between px-6 md:px-10">
+            <Button 
+              variant="ghost" 
+              onClick={handlePrev}
+              disabled={currentStep === 0}
+              className="text-slate-500 hover:text-teal-600 hover:bg-teal-50 font-medium disabled:opacity-30"
+            >
+              <ChevronLeft className="w-5 h-5 mr-2" /> Previous
+            </Button>
+
+            <div className="flex gap-2">
+              {journey.steps.map((_, idx) => (
+                <div 
+                  key={idx}
+                  className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                    idx === currentStep ? 'bg-teal-500 scale-125' : 'bg-slate-200'
+                  }`}
+                />
+              ))}
+            </div>
+
+            <Button 
+              onClick={handleNext}
+              className="bg-teal-600 hover:bg-teal-700 text-white px-8 py-2.5 rounded-xl font-bold shadow-lg shadow-teal-500/20 border-0 transition-transform active:scale-95"
+            >
+              {currentStep === journey.steps.length - 1 ? 'Finish' : 'Next'} <ChevronRight className="w-5 h-5 ml-2" />
+            </Button>
+          </div>
         </div>
+
       </main>
     </div>
   );

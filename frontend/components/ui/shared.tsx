@@ -21,10 +21,10 @@ export const Button = ({
   const baseStyles = "inline-flex items-center justify-center rounded-lg font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
   
   const variants = {
-    primary: "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg shadow-blue-500/30 border border-transparent",
-    secondary: "bg-white text-slate-900 hover:bg-slate-50 border border-slate-200 shadow-sm",
+    primary: "bg-[#00b6ff] hover:bg-[#0095d1] text-white shadow-lg shadow-[#00b6ff]/30 border border-transparent",
+    secondary: "bg-white text-[#0F172A] hover:bg-slate-50 border border-slate-200 shadow-sm",
     outline: "bg-transparent border-2 border-white/20 text-white hover:bg-white/10",
-    ghost: "bg-transparent text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+    ghost: "bg-transparent text-slate-600 hover:bg-slate-100 hover:text-[#0F172A]"
   };
   
   const sizes = {
@@ -66,7 +66,7 @@ export const Card = ({ children, className = '', ...props }: React.HTMLAttribute
 export const Input = ({ className = '', ...props }: React.InputHTMLAttributes<HTMLInputElement>) => {
   return (
     <input 
-      className={`w-full px-4 py-2 rounded-lg border border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all ${className}`}
+      className={`w-full px-4 py-2 rounded-lg border border-slate-300 focus:border-[#00b6ff] focus:ring-2 focus:ring-[#00b6ff]/20 outline-none transition-all ${className}`}
       {...props}
     />
   );
@@ -77,7 +77,7 @@ export const Badge = ({ children, variant = 'default', className = '' }: { child
     default: "bg-slate-100 text-slate-800",
     success: "bg-green-100 text-green-800",
     warning: "bg-amber-100 text-amber-800",
-    info: "bg-blue-100 text-blue-800"
+    info: "bg-[#00b6ff]/10 text-[#00b6ff]"
   };
   
   return (

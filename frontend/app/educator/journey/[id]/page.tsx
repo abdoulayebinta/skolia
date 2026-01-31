@@ -113,7 +113,7 @@ export default function JourneyPreview() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+      <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC]">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00b6ff]"></div>
       </div>
     );
@@ -121,8 +121,8 @@ export default function JourneyPreview() {
 
   if (!journey) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50">
-        <h2 className="text-xl font-bold text-slate-900 mb-4">Journey not found</h2>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#F8FAFC]">
+        <h2 className="text-xl font-bold text-[#0F172A] mb-4">Journey not found</h2>
         <Button onClick={() => router.push('/educator')}>Create New Journey</Button>
       </div>
     );
@@ -132,16 +132,16 @@ export default function JourneyPreview() {
   const avgScore = Math.round(journey.steps.reduce((acc, step) => acc + (step.resource.alignmentScore || 0), 0) / journey.steps.length);
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans">
+    <div className="min-h-screen bg-[#F8FAFC] font-sans">
       {/* Sticky Header */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-20 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" onClick={() => router.push('/educator')} className="text-slate-500 hover:text-slate-900">
+            <Button variant="ghost" size="sm" onClick={() => router.push('/educator')} className="text-slate-500 hover:text-[#0F172A]">
               <ArrowLeft className="w-5 h-5" />
             </Button>
             <div>
-              <h1 className="font-bold text-xl text-slate-900 line-clamp-1">{journey.title}</h1>
+              <h1 className="font-bold text-xl text-[#0F172A] line-clamp-1">{journey.title}</h1>
               <div className="flex items-center text-sm text-slate-500 mt-1">
                 <span className="bg-slate-100 px-2 py-0.5 rounded text-slate-600 font-medium mr-2">Grade {journey.grade}</span>
                 <span className="bg-slate-100 px-2 py-0.5 rounded text-slate-600 font-medium">{journey.subject}</span>
@@ -150,7 +150,7 @@ export default function JourneyPreview() {
           </div>
           
           <div className="flex items-center gap-6">
-            <div className="hidden md:flex items-center gap-3 bg-slate-50 px-4 py-2 rounded-xl border border-slate-100">
+            <div className="hidden md:flex items-center gap-3 bg-[#F8FAFC] px-4 py-2 rounded-xl border border-slate-100">
               <div className="text-right">
                 <div className="text-xs text-slate-400 font-medium uppercase tracking-wider">Confidence</div>
                 <div className="text-sm font-bold text-slate-700">Curriculum Aligned</div>
@@ -161,7 +161,7 @@ export default function JourneyPreview() {
             <Button 
               onClick={handleDeploy} 
               isLoading={deploying}
-              className="bg-gradient-to-r from-[#00b6ff] to-blue-600 hover:from-[#00a0e0] hover:to-blue-700 text-white shadow-lg shadow-blue-500/20 border-0 px-6 py-2.5 h-auto text-base font-semibold rounded-xl"
+              className="bg-[#00b6ff] hover:bg-[#0095d1] text-white shadow-lg shadow-[#00b6ff]/20 border-0 px-6 py-2.5 h-auto text-base font-semibold rounded-xl"
             >
               <Share2 className="w-5 h-5 mr-2" /> Deploy Journey
             </Button>
@@ -181,7 +181,7 @@ export default function JourneyPreview() {
               <div key={index} className="flex flex-col group">
                 {/* Step Indicator */}
                 <div className="flex items-center justify-center mb-6 relative">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center border-4 border-slate-50 shadow-md z-10 font-bold text-lg
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center border-4 border-[#F8FAFC] shadow-md z-10 font-bold text-lg
                     ${index === 0 ? 'bg-blue-100 text-blue-600' : 
                       index === 1 ? 'bg-purple-100 text-purple-600' : 
                       'bg-orange-100 text-orange-600'}`}
@@ -209,7 +209,7 @@ export default function JourneyPreview() {
                       <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center backdrop-blur-sm">
                         <Button 
                           onClick={() => setSwappingStepIndex(index)}
-                          className="bg-white text-slate-900 hover:bg-slate-100 border-0 shadow-lg transform scale-90 group-hover:scale-100 transition-transform duration-200"
+                          className="bg-white text-[#0F172A] hover:bg-slate-100 border-0 shadow-lg transform scale-90 group-hover:scale-100 transition-transform duration-200"
                           size="sm"
                         >
                           <RefreshCw className="w-4 h-4 mr-2" /> Swap Resource
@@ -237,7 +237,7 @@ export default function JourneyPreview() {
                         )}
                       </div>
 
-                      <h3 className="font-bold text-lg text-slate-900 mb-2 line-clamp-2 group-hover:text-[#00b6ff] transition-colors">
+                      <h3 className="font-bold text-lg text-[#0F172A] mb-2 line-clamp-2 group-hover:text-[#00b6ff] transition-colors">
                         {step.resource.title}
                       </h3>
                       
@@ -247,7 +247,7 @@ export default function JourneyPreview() {
 
                       {step.resource.culturalRelevance && (
                         <div className="mt-auto pt-4 border-t border-slate-100">
-                          <div className="flex items-center text-xs font-medium text-indigo-600 bg-indigo-50 px-2 py-1 rounded-md w-fit">
+                          <div className="flex items-center text-xs font-medium text-[#00b6ff] bg-[#00b6ff]/10 px-2 py-1 rounded-md w-fit">
                             <span className="mr-1">✨</span> Culturally Relevant
                           </div>
                         </div>
@@ -265,7 +265,7 @@ export default function JourneyPreview() {
       {showDeployModal && classCode && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-fade-in-up">
           <div className="bg-white rounded-3xl w-full max-w-md shadow-2xl overflow-hidden relative">
-            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-[#00b6ff] to-blue-600"></div>
+            <div className="absolute top-0 left-0 w-full h-2 bg-[#00b6ff]"></div>
             <button 
               onClick={() => setShowDeployModal(false)}
               className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-1 rounded-full hover:bg-slate-100 transition-colors"
@@ -278,14 +278,14 @@ export default function JourneyPreview() {
                 <CheckCircle className="w-8 h-8 text-green-600" />
               </div>
               
-              <h2 className="text-2xl font-bold text-slate-900 mb-2">Journey Deployed!</h2>
+              <h2 className="text-2xl font-bold text-[#0F172A] mb-2">Journey Deployed!</h2>
               <p className="text-slate-500 mb-8">
                 Your learning journey is ready. Share this code with your students to get started.
               </p>
 
-              <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200 mb-6 relative group">
+              <div className="bg-[#F8FAFC] rounded-2xl p-6 border border-slate-200 mb-6 relative group">
                 <div className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Class Code</div>
-                <div className="text-5xl font-mono font-bold text-slate-900 tracking-widest">{classCode}</div>
+                <div className="text-5xl font-mono font-bold text-[#0F172A] tracking-widest">{classCode}</div>
                 
                 <div className="absolute inset-0 flex items-center justify-center bg-white/80 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-2xl cursor-pointer"
                      onClick={() => navigator.clipboard.writeText(classCode)}>
@@ -296,7 +296,7 @@ export default function JourneyPreview() {
               </div>
 
               <Button 
-                className="w-full bg-[#00b6ff] hover:bg-blue-600 text-white py-3 rounded-xl font-semibold shadow-lg shadow-blue-500/20"
+                className="w-full bg-[#00b6ff] hover:bg-[#0095d1] text-white py-3 rounded-xl font-semibold shadow-lg shadow-[#00b6ff]/20"
                 onClick={() => setShowDeployModal(false)}
               >
                 Done
@@ -311,7 +311,7 @@ export default function JourneyPreview() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
           <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[80vh] flex flex-col shadow-2xl animate-fade-in-up">
             <div className="p-6 border-b border-slate-100 flex justify-between items-center">
-              <h3 className="text-xl font-bold text-slate-900">Select Replacement Resource</h3>
+              <h3 className="text-xl font-bold text-[#0F172A]">Select Replacement Resource</h3>
               <button 
                 onClick={() => setSwappingStepIndex(null)}
                 className="text-slate-400 hover:text-slate-600"

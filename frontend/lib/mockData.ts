@@ -301,11 +301,13 @@ export const generateJourneyFromPrompt = async (prompt: string): Promise<Learnin
   const teacherTool = teacherResources.length > 0 ? teacherResources[0] : undefined;
 
   const steps: JourneyStep[] = [];
-  
+
+  // Add Preparation step if teacher tool exists
   if (teacherTool) {
     steps.push({ stepType: 'Preparation', resource: teacherTool });
   }
-  
+
+  // Add Student steps
   steps.push({ stepType: 'Hook', resource: hook });
   steps.push({ stepType: 'Instruction', resource: instruction });
   steps.push({ stepType: 'Application', resource: application });

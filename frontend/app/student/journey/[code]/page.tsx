@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ChevronRight, ChevronLeft, CheckCircle, Play, BookOpen, Gamepad2, RotateCcw, Home, Star, Trophy, Sparkles } from 'lucide-react';
+import { ChevronRight, ChevronLeft, CheckCircle, Play, BookOpen, Gamepad2, RotateCcw, Home, Star, Trophy, Sparkles, Clock, Headphones } from 'lucide-react';
 import { Button } from '../../../../components/ui/shared';
 import { getJourneyByCode, LearningJourney, Resource } from '../../../../lib/mockData';
 

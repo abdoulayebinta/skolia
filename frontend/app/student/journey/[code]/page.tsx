@@ -47,8 +47,8 @@ export default function StudentPlayer() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-teal-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-teal-500"></div>
+      <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-[#00b6ff]"></div>
       </div>
     );
   }
@@ -57,10 +57,10 @@ export default function StudentPlayer() {
 
   if (completed) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-teal-50 to-orange-50 flex flex-col items-center justify-center p-4 text-center font-sans">
+      <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center p-4 text-center font-sans">
         <div className="mb-8 relative animate-bounce">
-          <div className="absolute inset-0 bg-orange-400 blur-3xl opacity-30 rounded-full"></div>
-          <div className="relative bg-gradient-to-br from-orange-400 to-amber-500 w-32 h-32 rounded-full flex items-center justify-center shadow-2xl shadow-orange-500/40 border-4 border-white">
+          <div className="absolute inset-0 bg-[#00b6ff] blur-3xl opacity-20 rounded-full"></div>
+          <div className="relative bg-gradient-to-br from-[#00b6ff] to-blue-500 w-32 h-32 rounded-full flex items-center justify-center shadow-2xl shadow-[#00b6ff]/30 border-4 border-white">
             <Trophy className="w-16 h-16 text-white" />
           </div>
           <div className="absolute -top-2 -right-2">
@@ -68,29 +68,29 @@ export default function StudentPlayer() {
           </div>
         </div>
         
-        <h1 className="text-4xl md:text-6xl font-extrabold text-teal-900 mb-4 tracking-tight">
+        <h1 className="text-4xl md:text-6xl font-extrabold text-[#0F172A] mb-4 tracking-tight">
           Awesome Job!
         </h1>
-        <p className="text-xl md:text-2xl text-teal-700 mb-8 max-w-lg font-medium">
-          You've completed the <span className="text-orange-600 font-bold">"{journey.title}"</span> journey.
+        <p className="text-xl md:text-2xl text-slate-600 mb-8 max-w-lg font-medium">
+          You've completed the <span className="text-[#00b6ff] font-bold">"{journey.title}"</span> journey.
         </p>
 
-        <div className="bg-white rounded-3xl p-8 shadow-xl shadow-teal-900/5 max-w-md w-full mb-10 border border-teal-100">
-          <h3 className="text-lg font-bold text-teal-800 mb-4 flex items-center justify-center">
-            <Sparkles className="w-5 h-5 mr-2 text-orange-500" />
+        <div className="bg-white rounded-3xl p-8 shadow-xl shadow-slate-200/50 max-w-md w-full mb-10 border border-slate-100">
+          <h3 className="text-lg font-bold text-[#0F172A] mb-4 flex items-center justify-center">
+            <Sparkles className="w-5 h-5 mr-2 text-[#00b6ff]" />
             What you learned
           </h3>
-          <ul className="text-left space-y-3 text-teal-600">
+          <ul className="text-left space-y-3 text-slate-600">
             <li className="flex items-start">
-              <CheckCircle className="w-5 h-5 mr-3 text-teal-500 flex-shrink-0 mt-0.5" />
+              <CheckCircle className="w-5 h-5 mr-3 text-[#00b6ff] flex-shrink-0 mt-0.5" />
               <span>Explored key concepts in {journey.subject}</span>
             </li>
             <li className="flex items-start">
-              <CheckCircle className="w-5 h-5 mr-3 text-teal-500 flex-shrink-0 mt-0.5" />
+              <CheckCircle className="w-5 h-5 mr-3 text-[#00b6ff] flex-shrink-0 mt-0.5" />
               <span>Completed {journey.steps.length} interactive activities</span>
             </li>
             <li className="flex items-start">
-              <CheckCircle className="w-5 h-5 mr-3 text-teal-500 flex-shrink-0 mt-0.5" />
+              <CheckCircle className="w-5 h-5 mr-3 text-[#00b6ff] flex-shrink-0 mt-0.5" />
               <span>Mastered new skills for Grade {journey.grade}</span>
             </li>
           </ul>
@@ -102,13 +102,13 @@ export default function StudentPlayer() {
               setCompleted(false);
               setCurrentStep(0);
             }}
-            className="flex-1 bg-teal-600 hover:bg-teal-700 text-white py-4 rounded-xl font-bold text-lg shadow-lg shadow-teal-600/20 border-0"
+            className="flex-1 bg-[#00b6ff] hover:bg-[#0095d1] text-white py-4 rounded-xl font-bold text-lg shadow-lg shadow-[#00b6ff]/20 border-0"
           >
             <RotateCcw className="w-5 h-5 mr-2" /> Start Again
           </Button>
           <Button 
             onClick={() => router.push('/')}
-            className="flex-1 bg-white text-teal-700 hover:bg-teal-50 border-2 border-teal-100 py-4 rounded-xl font-bold text-lg"
+            className="flex-1 bg-white text-[#0F172A] hover:bg-slate-50 border-2 border-slate-200 py-4 rounded-xl font-bold text-lg"
           >
             <Home className="w-5 h-5 mr-2" /> Back Home
           </Button>
@@ -121,22 +121,22 @@ export default function StudentPlayer() {
   const stepType = journey.steps[currentStep].stepType;
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
+    <div className="min-h-screen bg-[#F8FAFC] flex flex-col font-sans">
       {/* Top Navigation Bar */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-20 shadow-sm">
         <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-teal-100 flex items-center justify-center text-teal-700 font-bold text-lg">
+            <div className="w-10 h-10 rounded-xl bg-[#00b6ff]/10 flex items-center justify-center text-[#00b6ff] font-bold text-lg">
               {currentStep + 1}
             </div>
             <div>
-              <h1 className="font-bold text-slate-900 text-sm md:text-base line-clamp-1">{journey.title}</h1>
+              <h1 className="font-bold text-[#0F172A] text-sm md:text-base line-clamp-1">{journey.title}</h1>
               <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">{stepType} Phase</div>
             </div>
           </div>
           
           <div className="flex items-center gap-2">
-            <div className="hidden md:flex items-center px-3 py-1 bg-orange-50 text-orange-700 rounded-full text-xs font-bold border border-orange-100">
+            <div className="hidden md:flex items-center px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-xs font-bold border border-slate-200">
               <Clock className="w-3 h-3 mr-1.5" />
               {currentResource.duration}
             </div>
@@ -149,7 +149,7 @@ export default function StudentPlayer() {
             <div 
               key={idx} 
               className={`h-full flex-1 transition-all duration-500 ${
-                idx <= currentStep ? 'bg-teal-500' : 'bg-transparent'
+                idx <= currentStep ? 'bg-[#00b6ff]' : 'bg-transparent'
               } ${idx < journey.steps.length - 1 ? 'border-r border-white' : ''}`}
             />
           ))}
@@ -195,7 +195,7 @@ export default function StudentPlayer() {
               variant="ghost" 
               onClick={handlePrev}
               disabled={currentStep === 0}
-              className="text-slate-500 hover:text-teal-600 hover:bg-teal-50 font-medium disabled:opacity-30"
+              className="text-slate-500 hover:text-[#00b6ff] hover:bg-[#00b6ff]/10 font-medium disabled:opacity-30"
             >
               <ChevronLeft className="w-5 h-5 mr-2" /> Previous
             </Button>
@@ -205,7 +205,7 @@ export default function StudentPlayer() {
                 <div 
                   key={idx}
                   className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-                    idx === currentStep ? 'bg-teal-500 scale-125' : 'bg-slate-200'
+                    idx === currentStep ? 'bg-[#00b6ff] scale-125' : 'bg-slate-200'
                   }`}
                 />
               ))}
@@ -213,7 +213,7 @@ export default function StudentPlayer() {
 
             <Button 
               onClick={handleNext}
-              className="bg-teal-600 hover:bg-teal-700 text-white px-8 py-2.5 rounded-xl font-bold shadow-lg shadow-teal-500/20 border-0 transition-transform active:scale-95"
+              className="bg-[#00b6ff] hover:bg-[#0095d1] text-white px-8 py-2.5 rounded-xl font-bold shadow-lg shadow-[#00b6ff]/20 border-0 transition-transform active:scale-95"
             >
               {currentStep === journey.steps.length - 1 ? 'Finish' : 'Next'} <ChevronRight className="w-5 h-5 ml-2" />
             </Button>

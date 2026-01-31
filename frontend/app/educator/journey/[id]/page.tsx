@@ -2,9 +2,10 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, Share2, RefreshCw, CheckCircle, Copy, X, Play, BookOpen, Gamepad2, FileText, Headphones, Clock, Lock, LayoutDashboard, BarChart3 } from 'lucide-react';
+import { ArrowLeft, Share2, RefreshCw, CheckCircle, Copy, X, Play, BookOpen, Gamepad2, FileText, Headphones, Clock, Lock, LayoutDashboard, BarChart3, Eye } from 'lucide-react';
 import { Button, Card, Badge } from '../../../../components/ui/shared';
 import { ResourceCard } from '../../../../components/ResourceCard';
+import { ResourceModal } from '../../../../components/ResourceModal';
 import { LearningJourney, saveJourney, resourceLibrary, Resource, ResourceType } from '../../../../lib/mockData';
 
 // Circular Progress Component for Confidence Score
@@ -76,6 +77,8 @@ export default function JourneyPreview() {
   const [classCode, setClassCode] = useState<string | null>(null);
   const [swappingStepIndex, setSwappingStepIndex] = useState<number | null>(null);
   const [showDeployModal, setShowDeployModal] = useState(false);
+  const [previewResource, setPreviewResource] = useState<Resource | null>(null);
+  const [previewStepIndex, setPreviewStepIndex] = useState<number | null>(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && params.id) {
@@ -112,6 +115,11 @@ export default function JourneyPreview() {
     setJourney(updatedJourney);
     localStorage.setItem(`journey_draft_${journey.id}`, JSON.stringify(updatedJourney));
     setSwappingStepIndex(null);
+  };
+
+  const openPreview = (resource: Resource, index: number) => {
+    setPreviewResource(resource);
+    setPreviewStepIndex(index);
   };
 
   if (loading) {
@@ -227,10 +235,12 @@ export default function JourneyPreview() {
 
                   {/* Card */}
                   <div className="flex-1 lg:mt-8 relative">
-                    <div className={`rounded-2xl border-2 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden h-full flex flex-col group-hover:-translate-y-1
-                      ${isTeacherResource 
-                        ? 'bg-slate-50 border-slate-200 hover:border-slate-300' 
-                        : 'bg-white border-[#00b6ff]/20 hover:border-[#00b6ff]'}`}
+                    <div 
+                      className={`rounded-2xl border-2 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden h-full flex flex-col group-hover:-translate-y-1 cursor-pointer
+                        ${isTeacherResource 
+                          ? 'bg-slate-50 border-slate-200 hover:border-slate-300' 
+                          : 'bg-white border-[#00b6ff]/20 hover:border-[#00b6ff]'}`}
+                      onClick={() => openPreview(step.resource, index)}
                     >
                       {/* Thumbnail Placeholder */}
                       <div className={`h-32 lg:h-40 relative overflow-hidden ${isTeacherResource ? 'bg-slate-200' : 'bg-slate-100'}`}>
@@ -242,18 +252,32 @@ export default function JourneyPreview() {
                           {getTypeIcon(step.resource.type)}
                         </div>
                         
-                        {/* Swap Button Overlay (Only for Student Resources) */}
-                        {!isTeacherResource && (
-                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center backdrop-blur-sm">
+                        {/* Hover Overlay */}
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center backdrop-blur-sm gap-2">
+                          <Button 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              openPreview(step.resource, index);
+                            }}
+                            className="bg-white/20 text-white hover:bg-white/30 border border-white/50 backdrop-blur-md"
+                            size="sm"
+                          >
+                            <Eye className="w-4 h-4 mr-2" /> Preview
+                          </Button>
+                          
+                          {!isTeacherResource && (
                             <Button 
-                              onClick={() => setSwappingStepIndex(index)}
-                              className="bg-white text-[#0F172A] hover:bg-slate-100 border-0 shadow-lg transform scale-90 group-hover:scale-100 transition-transform duration-200"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSwappingStepIndex(index);
+                              }}
+                              className="bg-white text-[#0F172A] hover:bg-slate-100 border-0 shadow-lg"
                               size="sm"
                             >
-                              <RefreshCw className="w-4 h-4 mr-2" /> Swap Resource
+                              <RefreshCw className="w-4 h-4 mr-2" /> Swap
                             </Button>
-                          </div>
-                        )}
+                          )}
+                        </div>
 
                         <div className="absolute top-3 right-3">
                            <Badge variant="default" className="bg-white/90 backdrop-blur shadow-sm text-slate-700 border border-slate-100">
@@ -313,6 +337,18 @@ export default function JourneyPreview() {
           </div>
         </div>
       </main>
+
+      {/* Resource Preview Modal */}
+      <ResourceModal 
+        isOpen={!!previewResource}
+        onClose={() => setPreviewResource(null)}
+        resource={previewResource}
+        onSwap={
+          previewResource && previewStepIndex !== null && previewResource.audience === 'Student' 
+            ? () => setSwappingStepIndex(previewStepIndex) 
+            : undefined
+        }
+      />
 
       {/* Deploy Modal */}
       {showDeployModal && classCode && (

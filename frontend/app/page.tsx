@@ -6,7 +6,7 @@ import { GraduationCap, Users, ArrowRight, Sparkles, BookOpen, ShieldCheck, Brai
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-[#0F172A] overflow-hidden selection:bg-[#00b6ff]/30">
+    <div className="min-h-screen bg-[#F8FAFC] text-[#0F172A] overflow-hidden selection:bg-[#00b6ff]/30 flex flex-col">
       {/* Background Effects */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#00b6ff]/10 rounded-full blur-[128px] animate-pulse"></div>
@@ -14,7 +14,7 @@ export default function LandingPage() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10"></div>
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 py-20 md:py-32 flex flex-col items-center text-center">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 py-20 md:py-32 flex flex-col items-center text-center flex-grow">
         
         {/* Hero Badge */}
         <div className="inline-flex items-center px-4 py-2 rounded-full bg-white border border-slate-200 shadow-sm mb-8 animate-fade-in-up">
@@ -100,6 +100,26 @@ export default function LandingPage() {
         </div>
 
       </div>
+
+      {/* Footer / Trust Section */}
+      <footer className="relative z-10 w-full bg-white border-t border-slate-200 py-12">
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="bg-[#00b6ff]/5 border border-[#00b6ff]/10 rounded-2xl p-8 text-center">
+            <div className="flex items-center justify-center mb-4">
+               <span className="text-sm font-bold tracking-wider text-[#00b6ff] uppercase">Powered by IDÉLLO</span>
+            </div>
+            <p className="text-slate-700 text-lg font-medium leading-relaxed">
+              IDÉLLIA utilizes the certified 15,000+ resource library of <a href="#" className="text-[#00b6ff] hover:underline font-bold">IDÉLLO</a> to ensure 100% pedagogical safety.
+            </p>
+          </div>
+          
+          <div className="mt-8 flex justify-center items-center gap-6 text-sm text-slate-400">
+             <span>&copy; {new Date().getFullYear()} IDÉLLIA</span>
+             <a href="#" className="hover:text-[#00b6ff] transition-colors">Privacy</a>
+             <a href="#" className="hover:text-[#00b6ff] transition-colors">Terms</a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

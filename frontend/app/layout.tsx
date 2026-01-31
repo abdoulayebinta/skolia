@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CurriculaMap",
+  title: "IDÉLLIA",
   description: "AI Instructional Assistant that transforms educational resources into active pedagogical partners.",
 };
 

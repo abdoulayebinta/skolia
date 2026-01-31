@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Sparkles, ArrowLeft, Lightbulb, Search, BookOpen, Clock, GraduationCap } from 'lucide-react';
+import { Sparkles, ArrowLeft, Lightbulb, Search, BookOpen, Clock, GraduationCap, BrainCircuit } from 'lucide-react';
 import { Button, Card } from '../../components/ui/shared';
 import { generateJourneyFromPrompt } from '../../lib/mockData';
 
@@ -44,9 +44,14 @@ export default function EducatorBuilder() {
               <ArrowLeft className="w-4 h-4 mr-2" /> Back
             </Button>
             <div className="h-6 w-px bg-slate-200 hidden sm:block"></div>
-            <span className="font-bold text-xl bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600 hidden sm:block">
-              CurriculaMap
-            </span>
+            <div className="flex items-center gap-2 hidden sm:flex">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center shadow-md shadow-indigo-200">
+                <BrainCircuit className="w-5 h-5 text-white" />
+              </div>
+              <span className="font-bold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-700 to-violet-700">
+                IDÉLLIA
+              </span>
+            </div>
           </div>
           <div className="flex items-center gap-3">
             <div className="hidden sm:flex items-center px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-medium border border-indigo-100">

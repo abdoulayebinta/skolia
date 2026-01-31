@@ -271,6 +271,7 @@ export default function JourneyPreview() {
                                 e.stopPropagation();
                                 setSwappingStepIndex(index);
                               }}
+                              variant="secondary"
                               className="bg-white text-[#0F172A] hover:bg-slate-100 border-0 shadow-lg"
                               size="sm"
                             >

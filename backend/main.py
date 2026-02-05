@@ -4,8 +4,9 @@ from contextlib import asynccontextmanager
 from datetime import datetime
 import logging
 
-from backend.config import settings
-from backend.database import connect_to_mongo, close_mongo_connection, ping_database
+from config import settings
+from database import connect_to_mongo, close_mongo_connection, ping_database
+from routers import auth_router, resources_router, journeys_router
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -40,6 +41,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Include routers
+app.include_router(auth_router, prefix="/api/v1/auth", tags=["Authentication"])
+app.include_router(resources_router, prefix="/api/v1/resources", tags=["Resources"])
+app.include_router(journeys_router, prefix="/api/v1/journeys", tags=["Journeys"])
 
 
 @app.get("/healthz")

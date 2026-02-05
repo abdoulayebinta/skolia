@@ -4,7 +4,39 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { ChevronRight, ChevronLeft, CheckCircle, Play, BookOpen, Gamepad2, RotateCcw, Home, Star, Trophy, Sparkles, Clock, Headphones, Check, Menu } from 'lucide-react';
 import { Button } from '../../../../components/ui/shared';
-import { getJourneyByCode, LearningJourney, Resource } from '../../../../lib/mockData';
+import { getJourneyByCode } from '../../../../lib/journeys';
+
+// Define types locally since we're not using mockData anymore
+interface Resource {
+  id: string;
+  title: string;
+  description: string;
+  type: string;
+  audience: string;
+  duration: string;
+  subject: string;
+  grade: number;
+  tags: string[];
+  thumbnail?: string;
+  contentUrl?: string;
+  alignmentScore?: number;
+  culturalRelevance?: boolean;
+}
+
+interface JourneyStep {
+  stepType: string;
+  resource: Resource;
+}
+
+interface LearningJourney {
+  id: string;
+  title: string;
+  grade: number;
+  subject: string;
+  steps: JourneyStep[];
+  createdAt: string;
+  classCode?: string;
+}
 
 export default function StudentPlayer() {
   const params = useParams();
@@ -16,20 +48,25 @@ export default function StudentPlayer() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && params.code) {
-      const code = Array.isArray(params.code) ? params.code[0] : params.code;
-      const foundJourney = getJourneyByCode(code);
-      
-      if (foundJourney) {
-        // Filter out teacher resources for the student view
-        const studentSteps = foundJourney.steps.filter(step => step.resource.audience === 'Student');
-        setJourney({ ...foundJourney, steps: studentSteps });
-      } else {
-        // Handle invalid code
-        router.push('/student');
+    const loadJourney = async () => {
+      if (typeof window !== 'undefined' && params.code) {
+        const code = Array.isArray(params.code) ? params.code[0] : params.code;
+        
+        try {
+          const foundJourney = await getJourneyByCode(code);
+          // The backend already filters out teacher resources
+          setJourney(foundJourney);
+        } catch (error) {
+          console.error('Failed to load journey:', error);
+          // Handle invalid code
+          router.push('/student');
+        } finally {
+          setLoading(false);
+        }
       }
-      setLoading(false);
-    }
+    };
+    
+    loadJourney();
   }, [params.code, router]);
 
   const handleNext = () => {

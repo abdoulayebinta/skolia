@@ -6,7 +6,9 @@ import { ArrowLeft, Share2, RefreshCw, CheckCircle, Copy, X, Play, BookOpen, Gam
 import { Button, Card, Badge } from '../../../../components/ui/shared';
 import { ResourceCard } from '../../../../components/ResourceCard';
 import { ResourceModal } from '../../../../components/ResourceModal';
-import { LearningJourney, saveJourney, resourceLibrary, Resource, ResourceType } from '../../../../lib/mockData';
+import { LearningJourney, Resource, ResourceType } from '../../../../lib/mockData';
+import { fetchResources } from '../../../../lib/resources';
+import { getJourney, updateJourney, deployJourney, type Journey as APIJourney } from '../../../../lib/journeys';
 
 // Circular Progress Component for Confidence Score
 const CircularProgress = ({ percentage, size = 60, strokeWidth = 4, color = "#00b6ff" }: { percentage: number, size?: number, strokeWidth?: number, color?: string }) => {
@@ -79,32 +81,78 @@ export default function JourneyPreview() {
   const [showDeployModal, setShowDeployModal] = useState(false);
   const [previewResource, setPreviewResource] = useState<Resource | null>(null);
   const [previewStepIndex, setPreviewStepIndex] = useState<number | null>(null);
+  const [alternativeResources, setAlternativeResources] = useState<Resource[]>([]);
+  const [loadingAlternatives, setLoadingAlternatives] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && params.id) {
-      const stored = localStorage.getItem(`journey_draft_${params.id}`);
-      if (stored) {
-        setJourney(JSON.parse(stored));
+    const loadJourney = async () => {
+      if (!params.id) return;
+      
+      setLoading(true);
+      try {
+        // Fetch journey from database
+        const apiJourney = await getJourney(params.id as string);
+        
+        // Convert API format to component format
+        const convertedJourney: LearningJourney = {
+          id: apiJourney.id,
+          title: apiJourney.title,
+          grade: apiJourney.grade,
+          subject: apiJourney.subject,
+          steps: apiJourney.steps.map(step => ({
+            stepType: step.step_type as "Preparation" | "Hook" | "Instruction" | "Application",
+            resource: {
+              id: step.resource.id,
+              title: step.resource.title,
+              description: step.resource.description,
+              type: step.resource.type as ResourceType,
+              audience: step.resource.audience as "Student" | "Teacher",
+              duration: step.resource.duration,
+              subject: step.resource.subject as "Science" | "English" | "French" | "Math" | "History",
+              grade: step.resource.grade,
+              tags: step.resource.tags,
+              thumbnail: step.resource.thumbnail,
+              contentUrl: step.resource.content_url,
+              alignmentScore: step.resource.alignment_score,
+              culturalRelevance: step.resource.cultural_relevance
+            }
+          })),
+          createdAt: apiJourney.createdAt,
+          classCode: apiJourney.classCode
+        };
+        
+        setJourney(convertedJourney);
+      } catch (error) {
+        console.error('Failed to load journey:', error);
+        // Journey not found or error - stay on loading/error state
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
-    }
+    };
+    
+    loadJourney();
   }, [params.id]);
 
-  const handleDeploy = () => {
+  const handleDeploy = async () => {
     if (!journey) return;
     setDeploying(true);
     
-    setTimeout(() => {
-      const code = saveJourney(journey);
+    try {
+      const code = await deployJourney(journey.id);
       setClassCode(code);
-      setDeploying(false);
       setShowDeployModal(true);
-    }, 1000);
+    } catch (error) {
+      console.error('Failed to deploy journey:', error);
+      alert('Failed to deploy journey. Please try again.');
+    } finally {
+      setDeploying(false);
+    }
   };
 
-  const handleSwapResource = (newResource: Resource) => {
+  const handleSwapResource = async (newResource: Resource) => {
     if (!journey || swappingStepIndex === null) return;
     
+    // Update local state optimistically
     const newSteps = [...journey.steps];
     newSteps[swappingStepIndex] = {
       ...newSteps[swappingStepIndex],
@@ -113,9 +161,51 @@ export default function JourneyPreview() {
     
     const updatedJourney = { ...journey, steps: newSteps };
     setJourney(updatedJourney);
-    localStorage.setItem(`journey_draft_${journey.id}`, JSON.stringify(updatedJourney));
     setSwappingStepIndex(null);
+    setAlternativeResources([]);
+    
+    // Persist to database
+    try {
+      await updateJourney(journey.id, {
+        steps: newSteps.map(step => ({
+          step_type: step.stepType,
+          resource_id: step.resource.id
+        }))
+      });
+    } catch (error) {
+      console.error('Failed to update journey:', error);
+      // Optionally: revert the optimistic update or show an error message
+    }
   };
+
+  // Load alternative resources when swap modal opens
+  useEffect(() => {
+    if (swappingStepIndex !== null && journey) {
+      const loadAlternatives = async () => {
+        setLoadingAlternatives(true);
+        try {
+          const currentResource = journey.steps[swappingStepIndex].resource;
+          const response = await fetchResources({
+            subject: journey.subject,
+            audience: 'Student',
+            grade: journey.grade,
+            limit: 20
+          });
+          
+          // Filter out the current resource
+          const alternatives = response.resources.filter(r => r.id !== currentResource.id);
+          setAlternativeResources(alternatives);
+        } catch (error) {
+          console.error('Failed to load alternative resources:', error);
+          setAlternativeResources([]);
+        } finally {
+          setLoadingAlternatives(false);
+        }
+      };
+      
+      loadAlternatives();
+    }
+  }, [swappingStepIndex, journey]);
 
   const openPreview = (resource: Resource, index: number) => {
     setPreviewResource(resource);
@@ -411,19 +501,26 @@ export default function JourneyPreview() {
             </div>
             
             <div className="p-6 overflow-y-auto">
-              <div className="grid gap-4">
-                {resourceLibrary
-                  .filter(r => r.subject === journey.subject && r.id !== journey.steps[swappingStepIndex].resource.id && r.audience === 'Student')
-                  .map(resource => (
-                    <ResourceCard 
-                      key={resource.id} 
-                      resource={resource} 
+              {loadingAlternatives ? (
+                <div className="flex items-center justify-center py-12">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#00b6ff]"></div>
+                </div>
+              ) : alternativeResources.length === 0 ? (
+                <div className="text-center py-12 text-slate-500">
+                  <p>No alternative resources found.</p>
+                </div>
+              ) : (
+                <div className="grid gap-4">
+                  {alternativeResources.map(resource => (
+                    <ResourceCard
+                      key={resource.id}
+                      resource={resource}
                       onClick={() => handleSwapResource(resource)}
                       actionLabel="Select this resource"
                     />
-                  ))
-                }
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>

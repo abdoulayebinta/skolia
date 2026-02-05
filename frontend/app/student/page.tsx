@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Rocket, AlertCircle, HelpCircle } from 'lucide-react';
 import { Button, Card } from '../../components/ui/shared';
-import { getJourneyByCode } from '../../lib/mockData';
+import { getJourneyByCode } from '../../lib/journeys';
 
 export default function StudentLogin() {
   const router = useRouter();
@@ -12,22 +12,18 @@ export default function StudentLogin() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleJoin = (e: React.FormEvent) => {
+  const handleJoin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
 
-    // Simulate network check
-    setTimeout(() => {
-      const journey = getJourneyByCode(code.toUpperCase());
-      
-      if (journey) {
-        router.push(`/student/journey/${code.toUpperCase()}`);
-      } else {
-        setError("We couldn't find a journey with that code. Please check with your teacher.");
-        setIsLoading(false);
-      }
-    }, 800);
+    try {
+      await getJourneyByCode(code.toUpperCase());
+      router.push(`/student/journey/${code.toUpperCase()}`);
+    } catch (error) {
+      setError("We couldn't find a journey with that code. Please check with your teacher.");
+      setIsLoading(false);
+    }
   };
 
   return (

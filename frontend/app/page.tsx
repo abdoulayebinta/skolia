@@ -319,6 +319,58 @@ const FeatureGrid = () => {
   );
 };
 
+const RoleSelection = () => {
+  return (
+    <div className="w-full bg-[#F8FAFC] py-24 border-b border-slate-200">
+      <div className="max-w-4xl mx-auto px-6 text-center">
+        <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] mb-12">
+          Who are you signing up as?
+        </h2>
+
+        <div className="grid md:grid-cols-2 gap-8">
+          {/* Educator Card */}
+          <Link href="/educator" className="group relative">
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00b6ff] to-blue-400 rounded-2xl opacity-0 group-hover:opacity-100 transition duration-500 blur"></div>
+            <div className="relative h-full bg-white border border-slate-200 rounded-2xl p-10 flex flex-col items-center text-center hover:border-[#00b6ff]/50 hover:shadow-xl hover:shadow-[#00b6ff]/10 transition duration-300">
+              <div className="w-20 h-20 rounded-2xl bg-[#00b6ff]/10 flex items-center justify-center mb-6 group-hover:scale-110 transition duration-300">
+                <GraduationCap className="w-10 h-10 text-[#00b6ff]" />
+              </div>
+              <h3 className="text-2xl font-bold text-[#0F172A] mb-3">Educator</h3>
+              <p className="text-slate-500 mb-8 leading-relaxed">
+                Create structured lesson plans, discover resources, and deploy to your class instantly.
+              </p>
+              <div className="mt-auto w-full">
+                <div className="w-full py-3 bg-[#00b6ff] text-white rounded-xl font-bold shadow-lg shadow-[#00b6ff]/20 group-hover:bg-[#0095d1] transition-colors flex items-center justify-center">
+                  Get Started <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
+            </div>
+          </Link>
+
+          {/* Student Card */}
+          <Link href="/student" className="group relative">
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00b6ff] to-cyan-400 rounded-2xl opacity-0 group-hover:opacity-100 transition duration-500 blur"></div>
+            <div className="relative h-full bg-white border border-slate-200 rounded-2xl p-10 flex flex-col items-center text-center hover:border-[#00b6ff]/50 hover:shadow-xl hover:shadow-[#00b6ff]/10 transition duration-300">
+              <div className="w-20 h-20 rounded-2xl bg-[#00b6ff]/10 flex items-center justify-center mb-6 group-hover:scale-110 transition duration-300">
+                <Users className="w-10 h-10 text-[#00b6ff]" />
+              </div>
+              <h3 className="text-2xl font-bold text-[#0F172A] mb-3">Student</h3>
+              <p className="text-slate-500 mb-8 leading-relaxed">
+                Enter your class code to access your personalized learning journey.
+              </p>
+              <div className="mt-auto w-full">
+                <div className="w-full py-3 bg-white text-[#00b6ff] border-2 border-[#00b6ff] rounded-xl font-bold hover:bg-[#00b6ff]/5 transition-colors flex items-center justify-center">
+                  Join Class <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
+            </div>
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default function LandingPage() {
   const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -710,6 +762,9 @@ export default function LandingPage() {
 
       {/* Feature Grid Section */}
       <FeatureGrid />
+
+      {/* Role Selection Section */}
+      <RoleSelection />
 
       {/* Footer / Trust Section */}
       <footer className="relative z-10 w-full bg-white border-t border-slate-200 py-12">

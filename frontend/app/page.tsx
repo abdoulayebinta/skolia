@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { GraduationCap, Users, ArrowRight, Sparkles, BookOpen, ShieldCheck, BrainCircuit, Menu, X, Globe, Rocket, CheckCircle, Play, Lock, Layout, ListChecks, PieChart, MousePointer2, Loader2, Clock, Zap, Database, Heart, Quote, ChevronLeft, ChevronRight, UserPlus, Search, Wand2, School, Accessibility, Settings } from 'lucide-react';
+import { GraduationCap, Users, ArrowRight, Sparkles, BookOpen, ShieldCheck, BrainCircuit, Menu, X, Globe, Rocket, CheckCircle, Play, Lock, Layout, ListChecks, PieChart, MousePointer2, Loader2, Clock, Zap, Database, Heart, Quote, ChevronLeft, ChevronRight, UserPlus, Search, Wand2, School, Accessibility, Settings, FileCheck, Server, UserCheck } from 'lucide-react';
 import { Button } from '../components/ui/shared';
 
 const AnimatedCounter = ({ end, duration = 2000, prefix = "", suffix = "" }: { end: number, duration?: number, prefix?: string, suffix?: string }) => {
@@ -311,6 +311,61 @@ const FeatureGrid = () => {
               <p className="text-slate-500 leading-relaxed">
                 {feature.description}
               </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const RiskReversal = () => {
+  const items = [
+    {
+      icon: <Lock className="w-6 h-6 text-green-600" />,
+      title: "No Student Data Stored",
+      description: "We never collect or store PII from students. Access is completely anonymous."
+    },
+    {
+      icon: <FileCheck className="w-6 h-6 text-green-600" />,
+      title: "FERPA / COPPA Ready",
+      description: "Compliant with all major student privacy regulations and standards."
+    },
+    {
+      icon: <Server className="w-6 h-6 text-green-600" />,
+      title: "Privacy-First Architecture",
+      description: "Built from the ground up with security and privacy as core principles."
+    },
+    {
+      icon: <UserCheck className="w-6 h-6 text-green-600" />,
+      title: "Trusted by Schools",
+      description: "Vetted and approved by district administrators across the country."
+    }
+  ];
+
+  return (
+    <div className="w-full bg-slate-50 py-20 border-b border-slate-200">
+      <div className="max-w-6xl mx-auto px-6">
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold uppercase tracking-wider mb-4">
+            <ShieldCheck className="w-4 h-4 mr-2" /> Security Guarantee
+          </div>
+          <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] mb-4">
+            Safe, Secure, and Built for Schools
+          </h2>
+          <p className="text-lg text-slate-500 max-w-2xl mx-auto">
+            We take student privacy seriously. Our platform is designed to meet the strictest security standards.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {items.map((item, index) => (
+            <div key={index} className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow flex flex-col items-center text-center">
+              <div className="w-12 h-12 bg-green-50 rounded-full flex items-center justify-center mb-4">
+                {item.icon}
+              </div>
+              <h3 className="font-bold text-[#0F172A] mb-2">{item.title}</h3>
+              <p className="text-sm text-slate-500">{item.description}</p>
             </div>
           ))}
         </div>
@@ -762,6 +817,9 @@ export default function LandingPage() {
 
       {/* Feature Grid Section */}
       <FeatureGrid />
+
+      {/* Risk Reversal Section */}
+      <RiskReversal />
 
       {/* Role Selection Section */}
       <RoleSelection />

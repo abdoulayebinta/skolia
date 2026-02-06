@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { GraduationCap, Users, ArrowRight, Sparkles, BookOpen, ShieldCheck, BrainCircuit, Menu, X, Globe, Rocket, CheckCircle, Play, Lock, Layout, ListChecks, PieChart, MousePointer2, Loader2, Clock, Zap, Database, Heart, Quote, ChevronLeft, ChevronRight } from 'lucide-react';
+import { GraduationCap, Users, ArrowRight, Sparkles, BookOpen, ShieldCheck, BrainCircuit, Menu, X, Globe, Rocket, CheckCircle, Play, Lock, Layout, ListChecks, PieChart, MousePointer2, Loader2, Clock, Zap, Database, Heart, Quote, ChevronLeft, ChevronRight, UserPlus, Search, Wand2 } from 'lucide-react';
 import { Button } from '../components/ui/shared';
 
 const AnimatedCounter = ({ end, duration = 2000, prefix = "", suffix = "" }: { end: number, duration?: number, prefix?: string, suffix?: string }) => {
@@ -53,7 +53,7 @@ const AnimatedCounter = ({ end, duration = 2000, prefix = "", suffix = "" }: { e
   );
 };
 
-const Testimonials = () => {
+const SocialProof = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
@@ -61,24 +61,21 @@ const Testimonials = () => {
   const testimonials = [
     {
       quote: "IDÉLLIA saves me 6 hours a week — I can finally focus on teaching instead of searching for resources.",
-      name: "Sarah Jenkins",
+      author: "Sarah Jenkins",
       role: "Grade 5 Teacher",
-      location: "Toronto, ON",
-      avatar: "S"
+      school: "Westwood Elementary"
     },
     {
       quote: "The cultural relevance of the content is unmatched. My students finally see themselves in the curriculum.",
-      name: "David Chen",
+      author: "David Chen",
       role: "High School History",
-      location: "Vancouver, BC",
-      avatar: "D"
+      school: "Oak Ridge District"
     },
     {
       quote: "Setting up a lesson takes minutes, not hours. The AI suggestions are surprisingly accurate.",
-      name: "Marie Dubois",
+      author: "Marie Dubois",
       role: "French Immersion",
-      location: "Montreal, QC",
-      avatar: "M"
+      school: "École Saint-Laurent"
     }
   ];
 
@@ -118,6 +115,15 @@ const Testimonials = () => {
           Trusted by Educators Across North America
         </h2>
 
+        {/* Logos */}
+        <div className="flex flex-wrap justify-center items-center gap-12 md:gap-20 mb-20 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
+           <div className="flex items-center gap-2 font-bold text-xl text-slate-600"><div className="w-8 h-8 bg-slate-400 rounded-full"></div> District 9</div>
+           <div className="flex items-center gap-2 font-bold text-xl text-slate-600"><div className="w-8 h-8 bg-slate-400 rounded-md"></div> EduTech</div>
+           <div className="flex items-center gap-2 font-bold text-xl text-slate-600"><div className="w-8 h-8 bg-slate-400 rounded-tr-xl"></div> NorthStar</div>
+           <div className="flex items-center gap-2 font-bold text-xl text-slate-600"><div className="w-8 h-8 bg-slate-400 rounded-bl-xl"></div> FutureLearn</div>
+           <div className="flex items-center gap-2 font-bold text-xl text-slate-600"><div className="w-8 h-8 bg-slate-400 rounded-full border-4 border-slate-200"></div> Academix</div>
+        </div>
+
         {/* Testimonial Carousel */}
         <div 
           className="max-w-4xl mx-auto relative bg-white rounded-3xl p-8 md:p-12 shadow-xl shadow-slate-200/50 border border-slate-100"
@@ -144,11 +150,11 @@ const Testimonials = () => {
                  </p>
                  <div className="flex items-center gap-4">
                    <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#00b6ff] to-blue-600 flex items-center justify-center text-white font-bold text-xl shadow-md">
-                     {t.avatar}
+                     {t.author.charAt(0)}
                    </div>
                    <div className="text-left">
-                     <div className="font-bold text-[#0F172A] text-lg">{t.name}</div>
-                     <div className="text-sm text-slate-500 font-medium">{t.role} • {t.location}</div>
+                     <div className="font-bold text-[#0F172A] text-lg">{t.author}</div>
+                     <div className="text-sm text-slate-500 font-medium">{t.role}, {t.school}</div>
                    </div>
                  </div>
                </div>
@@ -176,6 +182,66 @@ const Testimonials = () => {
                <ChevronRight className="w-5 h-5" />
              </button>
            </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const HowItWorks = () => {
+  const steps = [
+    {
+      icon: <UserPlus className="w-8 h-8 text-white" />,
+      title: "Sign up in 60 seconds",
+      description: "Create your free account and get instant access to the platform."
+    },
+    {
+      icon: <Search className="w-8 h-8 text-white" />,
+      title: "Enter your lesson topic",
+      description: "Tell us what you want to teach, for which grade and subject."
+    },
+    {
+      icon: <Wand2 className="w-8 h-8 text-white" />,
+      title: "AI builds your lesson",
+      description: "Get a complete, curriculum-aligned learning journey instantly."
+    }
+  ];
+
+  return (
+    <div className="w-full bg-white py-24 border-b border-slate-200">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] mb-4">
+            How It Works
+          </h2>
+          <p className="text-lg text-slate-500 max-w-2xl mx-auto">
+            From idea to classroom-ready lesson in three simple steps.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-8 relative">
+          {/* Connecting Line (Desktop) */}
+          <div className="hidden md:block absolute top-12 left-[16%] right-[16%] h-0.5 bg-slate-100 -z-10"></div>
+
+          {steps.map((step, index) => (
+            <div 
+              key={index} 
+              className="flex flex-col items-center text-center group hover:-translate-y-2 transition-transform duration-300"
+            >
+              <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-[#00b6ff] to-blue-600 flex items-center justify-center shadow-lg shadow-[#00b6ff]/20 mb-6 group-hover:shadow-[#00b6ff]/40 transition-shadow duration-300 relative">
+                {step.icon}
+                <div className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-white border-2 border-[#00b6ff] flex items-center justify-center font-bold text-[#00b6ff] shadow-sm">
+                  {index + 1}
+                </div>
+              </div>
+              <h3 className="text-xl font-bold text-[#0F172A] mb-3 group-hover:text-[#00b6ff] transition-colors">
+                {step.title}
+              </h3>
+              <p className="text-slate-500 leading-relaxed max-w-xs">
+                {step.description}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
     </div>
@@ -565,8 +631,11 @@ export default function LandingPage() {
         </div>
       </div>
 
+      {/* How It Works Section */}
+      <HowItWorks />
+
       {/* Social Proof Section */}
-      <Testimonials />
+      <SocialProof />
 
       {/* Features Grid */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 py-24 flex-grow">

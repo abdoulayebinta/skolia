@@ -1,10 +1,57 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { GraduationCap, Users, ArrowRight, Sparkles, BookOpen, ShieldCheck, BrainCircuit, Menu, X, Globe, Rocket, CheckCircle, Play, Lock, Layout, ListChecks, PieChart, MousePointer2, Loader2 } from 'lucide-react';
+import { GraduationCap, Users, ArrowRight, Sparkles, BookOpen, ShieldCheck, BrainCircuit, Menu, X, Globe, Rocket, CheckCircle, Play, Lock, Layout, ListChecks, PieChart, MousePointer2, Loader2, Clock, Zap, Database, Heart } from 'lucide-react';
 import { Button } from '../components/ui/shared';
+
+const AnimatedCounter = ({ end, duration = 2000, prefix = "", suffix = "" }: { end: number, duration?: number, prefix?: string, suffix?: string }) => {
+  const [count, setCount] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!isVisible) return;
+
+    let startTime: number | null = null;
+    const step = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      setCount(Math.floor(progress * end));
+
+      if (progress < 1) {
+        window.requestAnimationFrame(step);
+      }
+    };
+
+    window.requestAnimationFrame(step);
+  }, [isVisible, end, duration]);
+
+  return (
+    <div ref={ref} className="text-4xl md:text-5xl font-bold text-[#00b6ff] mb-2 tracking-tight">
+      {prefix}{count.toLocaleString()}{suffix}
+    </div>
+  );
+};
 
 export default function LandingPage() {
   const router = useRouter();
@@ -185,7 +232,7 @@ export default function LandingPage() {
       </div>
 
       {/* Hero Section */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 pt-32 pb-20 lg:pt-48 lg:pb-32 flex-grow">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 pt-32 pb-20 lg:pt-48 lg:pb-32">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           
           {/* Left Column: Value + Signup */}
@@ -353,9 +400,45 @@ export default function LandingPage() {
           </div>
 
         </div>
+      </div>
 
-        {/* Features Grid */}
-        <div className="mt-24 grid md:grid-cols-3 gap-8 w-full animate-fade-in-up delay-300">
+      {/* ROI Metrics Strip */}
+      <div className="w-full bg-white border-y border-slate-200 py-16 relative z-10">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          <div className="flex flex-col items-center">
+            <div className="mb-3 p-3 bg-[#00b6ff]/10 rounded-full">
+              <Clock className="w-6 h-6 text-[#00b6ff]" />
+            </div>
+            <AnimatedCounter end={5} suffix="+" />
+            <div className="text-sm font-medium text-slate-500 uppercase tracking-wide">Hours Saved / Week</div>
+          </div>
+          <div className="flex flex-col items-center">
+            <div className="mb-3 p-3 bg-[#00b6ff]/10 rounded-full">
+              <Zap className="w-6 h-6 text-[#00b6ff]" />
+            </div>
+            <AnimatedCounter end={2} suffix="x" />
+            <div className="text-sm font-medium text-slate-500 uppercase tracking-wide">Student Engagement</div>
+          </div>
+          <div className="flex flex-col items-center">
+            <div className="mb-3 p-3 bg-[#00b6ff]/10 rounded-full">
+              <Database className="w-6 h-6 text-[#00b6ff]" />
+            </div>
+            <AnimatedCounter end={15000} suffix="+" />
+            <div className="text-sm font-medium text-slate-500 uppercase tracking-wide">Curated Resources</div>
+          </div>
+          <div className="flex flex-col items-center">
+            <div className="mb-3 p-3 bg-[#00b6ff]/10 rounded-full">
+              <Heart className="w-6 h-6 text-[#00b6ff]" />
+            </div>
+            <AnimatedCounter end={3000} suffix="+" />
+            <div className="text-sm font-medium text-slate-500 uppercase tracking-wide">Teachers Trust Us</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Features Grid */}
+      <div className="relative z-10 max-w-7xl mx-auto px-6 py-24 flex-grow">
+        <div className="grid md:grid-cols-3 gap-8 w-full animate-fade-in-up delay-300">
           <div className="bg-white border border-slate-200 rounded-xl p-6 hover:shadow-lg transition duration-300">
             <div className="w-10 h-10 rounded-lg bg-[#00b6ff]/10 flex items-center justify-center mb-4">
               <BookOpen className="w-5 h-5 text-[#00b6ff]" />
@@ -380,7 +463,6 @@ export default function LandingPage() {
             <p className="text-slate-500 text-sm">Prioritizing diverse voices and local indigenous content.</p>
           </div>
         </div>
-
       </div>
 
       {/* Footer / Trust Section */}

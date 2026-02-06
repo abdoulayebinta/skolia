@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { GraduationCap, Users, ArrowRight, Sparkles, BookOpen, ShieldCheck, BrainCircuit, Menu, X, Globe, Rocket, CheckCircle, Play, Lock, Layout, ListChecks, PieChart, MousePointer2, Loader2, Clock, Zap, Database, Heart, Quote, ChevronLeft, ChevronRight, UserPlus, Search, Wand2 } from 'lucide-react';
+import { GraduationCap, Users, ArrowRight, Sparkles, BookOpen, ShieldCheck, BrainCircuit, Menu, X, Globe, Rocket, CheckCircle, Play, Lock, Layout, ListChecks, PieChart, MousePointer2, Loader2, Clock, Zap, Database, Heart, Quote, ChevronLeft, ChevronRight, UserPlus, Search, Wand2, School, Accessibility, Settings } from 'lucide-react';
 import { Button } from '../components/ui/shared';
 
 const AnimatedCounter = ({ end, duration = 2000, prefix = "", suffix = "" }: { end: number, duration?: number, prefix?: string, suffix?: string }) => {
@@ -239,6 +239,77 @@ const HowItWorks = () => {
               </h3>
               <p className="text-slate-500 leading-relaxed max-w-xs">
                 {step.description}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const FeatureGrid = () => {
+  const features = [
+    {
+      icon: <BookOpen className="w-6 h-6 text-[#00b6ff]" />,
+      title: "Curriculum-Aligned",
+      description: "Every resource is vetted and mapped to specific learning outcomes."
+    },
+    {
+      icon: <ShieldCheck className="w-6 h-6 text-[#00b6ff]" />,
+      title: "Privacy-First",
+      description: "No student data collection. Anonymous access via class codes."
+    },
+    {
+      icon: <Sparkles className="w-6 h-6 text-[#00b6ff]" />,
+      title: "Culturally Relevant",
+      description: "Prioritizing diverse voices and local indigenous content."
+    },
+    {
+      icon: <School className="w-6 h-6 text-[#00b6ff]" />,
+      title: "Google Classroom Ready",
+      description: "Seamlessly integrate with your existing LMS and tools."
+    },
+    {
+      icon: <Accessibility className="w-6 h-6 text-[#00b6ff]" />,
+      title: "Inclusive & Accessible",
+      description: "Designed for all learners with built-in accessibility features."
+    },
+    {
+      icon: <Settings className="w-6 h-6 text-[#00b6ff]" />,
+      title: "Admin-Friendly",
+      description: "Easy deployment and management for schools and districts."
+    }
+  ];
+
+  return (
+    <div className="w-full bg-white py-24 border-b border-slate-200">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] mb-4">
+            Built for Modern Schools
+          </h2>
+          <p className="text-lg text-slate-500 max-w-2xl mx-auto">
+            Everything you need to deliver high-quality, engaging lessons.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          {features.map((feature, index) => (
+            <div 
+              key={index} 
+              className="bg-white border border-slate-200 rounded-xl p-8 hover:shadow-lg hover:border-[#00b6ff]/30 transition-all duration-300 group"
+            >
+              <div className="w-12 h-12 rounded-lg bg-[#00b6ff]/10 flex items-center justify-center mb-6 group-hover:bg-[#00b6ff] transition-colors duration-300">
+                {React.cloneElement(feature.icon as React.ReactElement, { 
+                  className: "w-6 h-6 text-[#00b6ff] group-hover:text-white transition-colors duration-300" 
+                })}
+              </div>
+              <h3 className="text-xl font-bold text-[#0F172A] mb-3 group-hover:text-[#00b6ff] transition-colors">
+                {feature.title}
+              </h3>
+              <p className="text-slate-500 leading-relaxed">
+                {feature.description}
               </p>
             </div>
           ))}
@@ -637,34 +708,8 @@ export default function LandingPage() {
       {/* Social Proof Section */}
       <SocialProof />
 
-      {/* Features Grid */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 py-24 flex-grow">
-        <div className="grid md:grid-cols-3 gap-8 w-full animate-fade-in-up delay-300">
-          <div className="bg-white border border-slate-200 rounded-xl p-6 hover:shadow-lg transition duration-300">
-            <div className="w-10 h-10 rounded-lg bg-[#00b6ff]/10 flex items-center justify-center mb-4">
-              <BookOpen className="w-5 h-5 text-[#00b6ff]" />
-            </div>
-            <h3 className="text-lg font-semibold text-[#0F172A] mb-2">Curriculum Aligned</h3>
-            <p className="text-slate-500 text-sm">Every resource is vetted and mapped to specific learning outcomes.</p>
-          </div>
-          
-          <div className="bg-white border border-slate-200 rounded-xl p-6 hover:shadow-lg transition duration-300">
-            <div className="w-10 h-10 rounded-lg bg-[#00b6ff]/10 flex items-center justify-center mb-4">
-              <ShieldCheck className="w-5 h-5 text-[#00b6ff]" />
-            </div>
-            <h3 className="text-lg font-semibold text-[#0F172A] mb-2">Privacy First</h3>
-            <p className="text-slate-500 text-sm">No student data collection. Anonymous access via class codes.</p>
-          </div>
-          
-          <div className="bg-white border border-slate-200 rounded-xl p-6 hover:shadow-lg transition duration-300">
-            <div className="w-10 h-10 rounded-lg bg-[#00b6ff]/10 flex items-center justify-center mb-4">
-              <Sparkles className="w-5 h-5 text-[#00b6ff]" />
-            </div>
-            <h3 className="text-lg font-semibold text-[#0F172A] mb-2">Culturally Relevant</h3>
-            <p className="text-slate-500 text-sm">Prioritizing diverse voices and local indigenous content.</p>
-          </div>
-        </div>
-      </div>
+      {/* Feature Grid Section */}
+      <FeatureGrid />
 
       {/* Footer / Trust Section */}
       <footer className="relative z-10 w-full bg-white border-t border-slate-200 py-12">

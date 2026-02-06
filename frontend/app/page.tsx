@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { GraduationCap, Users, ArrowRight, Sparkles, BookOpen, ShieldCheck, BrainCircuit, Menu, X, Globe, Rocket, CheckCircle, Play, Lock } from 'lucide-react';
+import { GraduationCap, Users, ArrowRight, Sparkles, BookOpen, ShieldCheck, BrainCircuit, Menu, X, Globe, Rocket, CheckCircle, Play, Lock, Layout, ListChecks, PieChart, MousePointer2 } from 'lucide-react';
 import { Button } from '../components/ui/shared';
 
 export default function LandingPage() {
@@ -238,65 +238,78 @@ export default function LandingPage() {
              {/* Abstract background blob */}
              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-gradient-to-br from-[#00b6ff]/20 to-purple-500/20 rounded-full blur-3xl -z-10 animate-pulse"></div>
              
+             {/* Floating Label */}
+             <div className="absolute -top-6 -right-6 z-20 bg-[#0F172A] text-white px-4 py-2 rounded-lg shadow-xl text-sm font-bold transform rotate-3 flex items-center animate-bounce">
+               <Sparkles className="w-4 h-4 text-[#00b6ff] mr-2" />
+               This is what you’ll build after signup
+             </div>
+
              {/* Mock UI Card */}
-             <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden transform rotate-[-2deg] hover:rotate-0 transition-transform duration-500 max-w-md mx-auto">
+             <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden transform rotate-[-1deg] hover:rotate-0 transition-transform duration-500 max-w-lg mx-auto">
                 {/* Header of mock app */}
-                <div className="bg-slate-50 border-b border-slate-100 p-4 flex items-center gap-2">
-                  <div className="flex gap-1.5">
-                    <div className="w-3 h-3 rounded-full bg-red-400"></div>
-                    <div className="w-3 h-3 rounded-full bg-amber-400"></div>
-                    <div className="w-3 h-3 rounded-full bg-green-400"></div>
+                <div className="bg-white border-b border-slate-100 p-4 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-[#00b6ff]/10 flex items-center justify-center text-[#00b6ff]">
+                      <PieChart className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-sm text-[#0F172A]">Grade 5 Fractions</h3>
+                      <p className="text-xs text-slate-500">Interactive Lesson</p>
+                    </div>
                   </div>
-                  <div className="ml-4 h-2 w-32 bg-slate-200 rounded-full"></div>
+                  <div className="flex gap-2">
+                    <div className="h-2 w-2 rounded-full bg-slate-200"></div>
+                    <div className="h-2 w-2 rounded-full bg-slate-200"></div>
+                  </div>
                 </div>
                 
-                {/* Body of mock app - Journey Timeline visualization */}
-                <div className="p-6 space-y-6">
-                   <div className="flex items-center justify-between mb-2">
-                      <div className="h-4 w-40 bg-slate-800 rounded"></div>
-                      <div className="h-8 w-8 rounded-full border-4 border-[#00b6ff] border-t-transparent animate-spin"></div>
-                   </div>
-                   
-                   {/* Mock timeline items */}
-                   <div className="flex gap-4">
-                      <div className="w-10 flex flex-col items-center">
-                         <div className="w-8 h-8 rounded-full bg-[#00b6ff] text-white flex items-center justify-center font-bold text-sm shadow-md shadow-[#00b6ff]/30">1</div>
-                         <div className="w-0.5 h-full bg-slate-100 my-1"></div>
-                      </div>
-                      <div className="flex-1 bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
-                         <div className="flex justify-between mb-2">
-                            <div className="h-3 w-16 bg-blue-100 rounded-full"></div>
-                            <div className="h-3 w-3 bg-green-400 rounded-full"></div>
-                         </div>
-                         <div className="h-4 w-3/4 bg-slate-800 rounded mb-2"></div>
-                         <div className="h-3 w-1/2 bg-slate-300 rounded"></div>
-                      </div>
-                   </div>
+                <div className="flex h-80">
+                  {/* Sidebar */}
+                  <div className="w-1/3 bg-slate-50 border-r border-slate-100 p-4 space-y-4">
+                    <div className="flex items-center gap-3 text-slate-400">
+                      <Layout className="w-4 h-4" />
+                      <div className="h-2 w-16 bg-slate-200 rounded-full"></div>
+                    </div>
+                    <div className="flex items-center gap-3 text-[#00b6ff] bg-white p-2 rounded-lg shadow-sm border border-slate-100">
+                      <Play className="w-4 h-4" />
+                      <span className="text-xs font-bold">Activities</span>
+                    </div>
+                    <div className="flex items-center gap-3 text-slate-400">
+                      <ListChecks className="w-4 h-4" />
+                      <div className="h-2 w-12 bg-slate-200 rounded-full"></div>
+                    </div>
+                  </div>
 
-                   <div className="flex gap-4">
-                      <div className="w-10 flex flex-col items-center">
-                         <div className="w-8 h-8 rounded-full bg-white border-2 border-[#00b6ff] text-[#00b6ff] flex items-center justify-center font-bold text-sm">2</div>
-                         <div className="w-0.5 h-full bg-slate-100 my-1"></div>
-                      </div>
-                      <div className="flex-1 bg-white p-4 rounded-xl border border-[#00b6ff] shadow-md shadow-[#00b6ff]/10">
-                         <div className="flex justify-between mb-2">
-                            <div className="h-3 w-16 bg-purple-100 rounded-full"></div>
-                         </div>
-                         <div className="h-4 w-2/3 bg-slate-800 rounded mb-2"></div>
-                         <div className="h-3 w-full bg-slate-300 rounded mb-1"></div>
-                         <div className="h-3 w-1/2 bg-slate-300 rounded"></div>
-                      </div>
-                   </div>
+                  {/* Main Content */}
+                  <div className="flex-1 p-6 flex flex-col">
+                    <div className="flex justify-between items-center mb-6">
+                      <h4 className="font-bold text-[#0F172A]">Activity 1: Visualizing Halves</h4>
+                      <span className="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-bold">Student View</span>
+                    </div>
 
-                   <div className="flex gap-4">
-                      <div className="w-10 flex flex-col items-center">
-                         <div className="w-8 h-8 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center font-bold text-sm">3</div>
+                    <div className="flex-1 flex flex-col items-center justify-center gap-6">
+                      <div className="flex gap-8">
+                        <div className="w-20 h-20 rounded-full border-4 border-slate-200 flex items-center justify-center relative group cursor-pointer hover:border-[#00b6ff] transition-colors">
+                          <div className="absolute inset-0 bg-slate-100 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                          <span className="relative z-10 font-bold text-slate-400 group-hover:text-[#00b6ff]">1/3</span>
+                        </div>
+                        <div className="w-20 h-20 rounded-full border-4 border-[#00b6ff] flex items-center justify-center relative cursor-pointer shadow-lg shadow-[#00b6ff]/20">
+                          <div className="absolute top-0 bottom-0 left-0 right-1/2 bg-[#00b6ff]/10 rounded-l-full border-r border-[#00b6ff]"></div>
+                          <span className="relative z-10 font-bold text-[#00b6ff]">1/2</span>
+                          <div className="absolute -bottom-8 left-1/2 -translate-x-1/2">
+                            <MousePointer2 className="w-5 h-5 text-[#00b6ff] fill-[#00b6ff]" />
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex-1 bg-slate-50 p-4 rounded-xl border border-slate-100 opacity-60">
-                         <div className="h-3 w-16 bg-orange-100 rounded-full mb-2"></div>
-                         <div className="h-4 w-1/2 bg-slate-300 rounded"></div>
+                      <p className="text-sm text-slate-500 text-center">Select the shape that represents 1/2</p>
+                    </div>
+
+                    <div className="mt-auto flex justify-end">
+                      <div className="px-4 py-2 bg-[#00b6ff] text-white text-xs font-bold rounded-lg shadow-md">
+                        Next Activity →
                       </div>
-                   </div>
+                    </div>
+                  </div>
                 </div>
              </div>
           </div>

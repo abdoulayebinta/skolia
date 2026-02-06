@@ -1,10 +1,19 @@
-"use client";
+'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { Sparkles, ArrowLeft, Lightbulb, Search, BookOpen, Clock, GraduationCap, BrainCircuit } from 'lucide-react';
+import {
+  Sparkles,
+  ArrowLeft,
+  Lightbulb,
+  Search,
+  BookOpen,
+  Clock,
+  GraduationCap,
+  BrainCircuit,
+} from 'lucide-react';
 import { Button, Card } from '../../components/ui/shared';
-import { generateJourneyFromPrompt } from '../../lib/mockData';
+import { generateJourney } from '../../lib/journeys';
 
 export default function EducatorBuilder() {
   const router = useRouter();
@@ -21,25 +30,24 @@ export default function EducatorBuilder() {
 
   const handleGenerate = async () => {
     if (!prompt.trim()) return;
-    
+
     setIsGenerating(true);
     try {
-      const journey = await generateJourneyFromPrompt(prompt);
-      if (typeof window !== 'undefined') {
-        localStorage.setItem(`journey_draft_${journey.id}`, JSON.stringify(journey));
-      }
+      const journey = await generateJourney(prompt);
+      // Journey is now saved to the database by generateJourney
+      // Navigate to the preview page with the database ID
       router.push(`/educator/journey/${journey.id}`);
     } catch (error) {
-      console.error("Failed to generate journey", error);
+      console.error('Failed to generate journey', error);
       setIsGenerating(false);
     }
   };
 
   const suggestions = [
-    "Grade 5 Science: Photosynthesis & Plant Life",
+    'Grade 5 Science: Photosynthesis & Plant Life',
     "French Vocabulary: 'Les Saisons' (The Seasons)",
-    "English: Creative Writing & Story Structure",
-    "Indigenous Perspectives: Plant Medicine"
+    'English: Creative Writing & Story Structure',
+    'Indigenous Perspectives: Plant Medicine',
   ];
 
   return (
@@ -48,7 +56,12 @@ export default function EducatorBuilder() {
       <header className="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" onClick={() => router.push('/')} className="text-slate-500 hover:text-[#0F172A]">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => router.push('/')}
+              className="text-slate-500 hover:text-[#0F172A]"
+            >
               <ArrowLeft className="w-4 h-4 mr-2" /> Back
             </Button>
             <div className="h-6 w-px bg-slate-200 hidden sm:block"></div>
@@ -74,7 +87,6 @@ export default function EducatorBuilder() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-12 sm:py-20">
-        
         {/* Hero Section */}
         <div className="text-center mb-12 animate-fade-in-up">
           <div className="inline-flex items-center justify-center p-3 rounded-2xl bg-white shadow-lg shadow-slate-100 mb-6 border border-slate-100">
@@ -83,18 +95,19 @@ export default function EducatorBuilder() {
             </div>
           </div>
           <h1 className="text-4xl sm:text-5xl font-bold text-[#0F172A] mb-4 tracking-tight">
-            Design Your Next <span className="text-[#00b6ff]">Learning Journey</span>
+            Design Your Next{' '}
+            <span className="text-[#00b6ff]">Learning Journey</span>
           </h1>
           <p className="text-slate-500 text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed">
-            Transform your lesson ideas into structured, curriculum-aligned journeys in seconds. 
-            Just describe what you want to teach.
+            Transform your lesson ideas into structured, curriculum-aligned
+            journeys in seconds. Just describe what you want to teach.
           </p>
         </div>
 
         {/* Input Card */}
         <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/60 border border-slate-100 overflow-hidden animate-fade-in-up delay-100">
           <div className="p-1 bg-gradient-to-r from-[#00b6ff] via-cyan-400 to-blue-500 opacity-50"></div>
-          
+
           <div className="p-6 sm:p-8">
             <div className="relative mb-6">
               <textarea
@@ -110,15 +123,19 @@ export default function EducatorBuilder() {
                 {prompt.length} / 500
               </div>
             </div>
-            
+
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
               <div className="flex items-center text-sm text-slate-500 bg-[#F8FAFC] px-3 py-1.5 rounded-lg border border-slate-100">
                 <Search className="w-4 h-4 mr-2 text-[#00b6ff]" />
-                <span>Searching <span className="font-semibold text-slate-700">15,000+</span> certified resources</span>
+                <span>
+                  Searching{' '}
+                  <span className="font-semibold text-slate-700">15,000+</span>{' '}
+                  certified resources
+                </span>
               </div>
-              
-              <Button 
-                onClick={handleGenerate} 
+
+              <Button
+                onClick={handleGenerate}
                 disabled={!prompt.trim() || isGenerating}
                 isLoading={isGenerating}
                 size="lg"
@@ -136,12 +153,12 @@ export default function EducatorBuilder() {
           <div className="flex items-center justify-center mb-6">
             <div className="h-px bg-slate-200 w-12 mr-4"></div>
             <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider flex items-center">
-              <Lightbulb className="w-4 h-4 mr-2 text-amber-400" /> 
+              <Lightbulb className="w-4 h-4 mr-2 text-amber-400" />
               Inspiration
             </h3>
             <div className="h-px bg-slate-200 w-12 ml-4"></div>
           </div>
-          
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {suggestions.map((s, i) => (
               <button
@@ -150,7 +167,11 @@ export default function EducatorBuilder() {
                 className="group flex items-center p-4 bg-white rounded-xl border border-slate-200 hover:border-[#00b6ff]/50 hover:shadow-md hover:shadow-[#00b6ff]/10 transition-all duration-200 text-left"
               >
                 <div className="w-10 h-10 rounded-lg bg-[#00b6ff]/10 text-[#00b6ff] flex items-center justify-center mr-4 group-hover:bg-[#00b6ff] group-hover:text-white transition-colors duration-200">
-                  {i % 2 === 0 ? <BookOpen className="w-5 h-5" /> : <Clock className="w-5 h-5" />}
+                  {i % 2 === 0 ? (
+                    <BookOpen className="w-5 h-5" />
+                  ) : (
+                    <Clock className="w-5 h-5" />
+                  )}
                 </div>
                 <span className="text-slate-600 font-medium group-hover:text-[#0F172A] transition-colors">
                   {s}
@@ -159,9 +180,7 @@ export default function EducatorBuilder() {
             ))}
           </div>
         </div>
-
       </main>
     </div>
   );
 }
-

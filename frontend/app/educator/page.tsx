@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Sparkles, ArrowLeft, Lightbulb, Search, BookOpen, Clock, GraduationCap, BrainCircuit } from 'lucide-react';
 import { Button, Card } from '../../components/ui/shared';
@@ -10,6 +10,14 @@ export default function EducatorBuilder() {
   const router = useRouter();
   const [prompt, setPrompt] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    // Auto-focus the textarea on mount for immediate engagement
+    if (textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  }, []);
 
   const handleGenerate = async () => {
     if (!prompt.trim()) return;
@@ -90,6 +98,7 @@ export default function EducatorBuilder() {
           <div className="p-6 sm:p-8">
             <div className="relative mb-6">
               <textarea
+                ref={textareaRef}
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 placeholder="Describe your lesson topic, grade level, and learning goals... (e.g., 'Create a 45-minute interactive lesson on the solar system for Grade 5, focusing on Mars exploration and including a hands-on activity.')"

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { GraduationCap, Users, ArrowRight, Sparkles, BookOpen, ShieldCheck, BrainCircuit, Menu, X, Globe, Rocket, CheckCircle, Play, Lock, Layout, ListChecks, PieChart, MousePointer2 } from 'lucide-react';
+import { GraduationCap, Users, ArrowRight, Sparkles, BookOpen, ShieldCheck, BrainCircuit, Menu, X, Globe, Rocket, CheckCircle, Play, Lock, Layout, ListChecks, PieChart, MousePointer2, Loader2 } from 'lucide-react';
 import { Button } from '../components/ui/shared';
 
 export default function LandingPage() {
@@ -12,6 +12,12 @@ export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [classCode, setClassCode] = useState('');
   const [language, setLanguage] = useState<'EN' | 'FR'>('EN');
+  
+  // Signup Form State
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isSigningUp, setIsSigningUp] = useState(false);
+  const [signupSuccess, setSignupSuccess] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,9 +34,22 @@ export default function LandingPage() {
     }
   };
 
-  const handleTeacherSignup = (e: React.FormEvent) => {
+  const handleTeacherSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    router.push('/educator');
+    if (!email || !password) return;
+
+    setIsSigningUp(true);
+    
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    setIsSigningUp(false);
+    setSignupSuccess(true);
+    
+    // Redirect after brief success message
+    setTimeout(() => {
+      router.push('/educator');
+    }, 1000);
   };
 
   const toggleLanguage = () => {
@@ -201,18 +220,37 @@ export default function LandingPage() {
                <form onSubmit={handleTeacherSignup} className="space-y-4">
                   <input 
                     type="email" 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter your work email" 
                     className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#00b6ff] focus:ring-4 focus:ring-[#00b6ff]/10 outline-none transition-all"
                     required
+                    disabled={isSigningUp || signupSuccess}
                   />
                   <input 
                     type="password" 
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     placeholder="Create a password" 
                     className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#00b6ff] focus:ring-4 focus:ring-[#00b6ff]/10 outline-none transition-all"
                     required
+                    disabled={isSigningUp || signupSuccess}
                   />
-                  <Button className="w-full py-4 text-lg font-bold rounded-xl shadow-lg shadow-[#00b6ff]/25">
-                    Start Free & Create My First Lesson →
+                  <Button 
+                    className={`w-full py-4 text-lg font-bold rounded-xl shadow-lg shadow-[#00b6ff]/25 transition-all duration-300 ${signupSuccess ? 'bg-green-500 hover:bg-green-600' : ''}`}
+                    disabled={isSigningUp || signupSuccess}
+                  >
+                    {isSigningUp ? (
+                      <span className="flex items-center justify-center">
+                        <Loader2 className="w-5 h-5 mr-2 animate-spin" /> Creating Account...
+                      </span>
+                    ) : signupSuccess ? (
+                      <span className="flex items-center justify-center">
+                        <CheckCircle className="w-5 h-5 mr-2" /> Success! Redirecting...
+                      </span>
+                    ) : (
+                      'Start Free & Create My First Lesson →'
+                    )}
                   </Button>
                </form>
 

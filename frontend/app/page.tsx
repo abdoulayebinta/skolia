@@ -6,6 +6,218 @@ import { useRouter } from 'next/navigation';
 import { GraduationCap, Users, ArrowRight, Sparkles, BookOpen, ShieldCheck, BrainCircuit, Menu, X, Globe, Rocket, CheckCircle, Play, Lock, Layout, ListChecks, PieChart, MousePointer2, Loader2, Clock, Zap, Database, Heart, Quote, ChevronLeft, ChevronRight, UserPlus, Search, Wand2, School, Accessibility, Settings, FileCheck, Server, UserCheck } from 'lucide-react';
 import { Button } from '../components/ui/shared';
 
+// Translations
+const translations = {
+  EN: {
+    nav: {
+      pricing: "Pricing",
+      enterCode: "Enter Class Code",
+      login: "Log in",
+      signup: "Sign Up Free"
+    },
+    hero: {
+      badge: "IDÉLLIA: AI-Powered Learning Journeys",
+      title: "Transform Passive Content into",
+      titleHighlight: "Active Learning",
+      subtitle: "Generate curriculum-aligned learning journeys in under 2 minutes with IDÉLLIA. Secure, culturally relevant, and designed for the modern classroom.",
+      headline: "Create a Classroom-Ready Lesson in",
+      headlineHighlight: "Under 2 Minutes",
+      subtext: "AI-powered lesson creation that saves teachers 5+ hours per week.",
+      signupLabel: "Start free — built for educators",
+      benefits: [
+        "Save hours on lesson planning",
+        "Curriculum-aligned automatically",
+        "No student data collected"
+      ],
+      emailPlaceholder: "Enter your work email",
+      passwordPlaceholder: "Create a password",
+      cta: "Start Free & Create My First Lesson →",
+      creating: "Creating Account...",
+      success: "Success! Redirecting...",
+      microTrust: "No credit card • Free forever tier • Setup in 60 seconds",
+      previewLabel: "This is what you’ll build after signup",
+      previewTitle: "Grade 5 Fractions",
+      previewSubtitle: "Interactive Lesson",
+      previewActivity: "Activity 1: Visualizing Halves",
+      previewStudentView: "Student View",
+      previewInstruction: "Select the shape that represents 1/2",
+      previewNext: "Next Activity →",
+      previewSidebar: {
+        activities: "Activities"
+      }
+    },
+    roi: {
+      hours: "Hours Saved / Week",
+      engagement: "Student Engagement",
+      resources: "Curated Resources",
+      trust: "Teachers Trust Us"
+    },
+    howItWorks: {
+      title: "How It Works",
+      subtitle: "From idea to classroom-ready lesson in three simple steps.",
+      steps: [
+        { title: "Sign up in 60 seconds", description: "Create your free account and get instant access to the platform." },
+        { title: "Enter your lesson topic", description: "Tell us what you want to teach, for which grade and subject." },
+        { title: "AI builds your lesson", description: "Get a complete, curriculum-aligned learning journey instantly." }
+      ]
+    },
+    socialProof: {
+      title: "Trusted by Educators Across North America",
+      testimonials: [
+        { quote: "IDÉLLIA saves me 6 hours a week — I can finally focus on teaching instead of searching for resources.", role: "Grade 5 Teacher" },
+        { quote: "The cultural relevance of the content is unmatched. My students finally see themselves in the curriculum.", role: "High School History" },
+        { quote: "Setting up a lesson takes minutes, not hours. The AI suggestions are surprisingly accurate.", role: "French Immersion" }
+      ]
+    },
+    features: {
+      title: "Built for Modern Schools",
+      subtitle: "Everything you need to deliver high-quality, engaging lessons.",
+      items: [
+        { title: "Curriculum-Aligned", description: "Every resource is vetted and mapped to specific learning outcomes." },
+        { title: "Privacy-First", description: "No student data collection. Anonymous access via class codes." },
+        { title: "Culturally Relevant", description: "Prioritizing diverse voices and local indigenous content." },
+        { title: "Google Classroom Ready", description: "Seamlessly integrate with your existing LMS and tools." },
+        { title: "Inclusive & Accessible", description: "Designed for all learners with built-in accessibility features." },
+        { title: "Admin-Friendly", description: "Easy deployment and management for schools and districts." }
+      ]
+    },
+    risk: {
+      badge: "Security Guarantee",
+      title: "Safe, Secure, and Built for Schools",
+      subtitle: "We take student privacy seriously. Our platform is designed to meet the strictest security standards.",
+      items: [
+        { title: "No Student Data Stored", description: "We never collect or store PII from students. Access is completely anonymous." },
+        { title: "FERPA / COPPA Ready", description: "Compliant with all major student privacy regulations and standards." },
+        { title: "Privacy-First Architecture", description: "Built from the ground up with security and privacy as core principles." },
+        { title: "Trusted by Schools", description: "Vetted and approved by district administrators across the country." }
+      ]
+    },
+    role: {
+      title: "Who are you signing up as?",
+      educator: {
+        title: "Educator",
+        desc: "Create structured lesson plans, discover resources, and deploy to your class instantly.",
+        cta: "Get Started"
+      },
+      student: {
+        title: "Student",
+        desc: "Enter your class code to access your personalized learning journey.",
+        cta: "Join Class"
+      }
+    },
+    footer: {
+      poweredBy: "Powered by IDÉLLO",
+      text: "IDÉLLIA utilizes the certified 15,000+ resource library of IDÉLLO to ensure 100% pedagogical safety.",
+      privacy: "Privacy",
+      terms: "Terms"
+    }
+  },
+  FR: {
+    nav: {
+      pricing: "Tarifs",
+      enterCode: "Entrer le code classe",
+      login: "Connexion",
+      signup: "Inscription Gratuite"
+    },
+    hero: {
+      badge: "IDÉLLIA : Parcours d'apprentissage propulsés par l'IA",
+      title: "Transformez le contenu passif en",
+      titleHighlight: "Apprentissage Actif",
+      subtitle: "Générez des parcours d'apprentissage alignés sur le programme en moins de 2 minutes avec IDÉLLIA. Sécurisé, culturellement pertinent et conçu pour la classe moderne.",
+      headline: "Créez une leçon prête pour la classe en",
+      headlineHighlight: "Moins de 2 Minutes",
+      subtext: "Création de leçons assistée par IA qui fait gagner aux enseignants plus de 5 heures par semaine.",
+      signupLabel: "Commencez gratuitement — conçu pour les éducateurs",
+      benefits: [
+        "Gagnez des heures sur la planification",
+        "Alignement automatique au programme",
+        "Aucune donnée élève collectée"
+      ],
+      emailPlaceholder: "Entrez votre email professionnel",
+      passwordPlaceholder: "Créez un mot de passe",
+      cta: "Commencer Gratuitement & Créer Ma Première Leçon →",
+      creating: "Création du compte...",
+      success: "Succès ! Redirection...",
+      microTrust: "Pas de carte de crédit • Gratuit pour toujours • Configuration en 60s",
+      previewLabel: "Voici ce que vous créerez après l'inscription",
+      previewTitle: "Fractions 5e année",
+      previewSubtitle: "Leçon Interactive",
+      previewActivity: "Activité 1 : Visualiser les moitiés",
+      previewStudentView: "Vue Élève",
+      previewInstruction: "Sélectionnez la forme qui représente 1/2",
+      previewNext: "Activité Suivante →",
+      previewSidebar: {
+        activities: "Activités"
+      }
+    },
+    roi: {
+      hours: "Heures Gagnées / Semaine",
+      engagement: "Engagement des Élèves",
+      resources: "Ressources Certifiées",
+      trust: "Enseignants nous font confiance"
+    },
+    howItWorks: {
+      title: "Comment ça marche",
+      subtitle: "De l'idée à la leçon prête pour la classe en trois étapes simples.",
+      steps: [
+        { title: "Inscrivez-vous en 60 secondes", description: "Créez votre compte gratuit et accédez instantanément à la plateforme." },
+        { title: "Entrez votre sujet de leçon", description: "Dites-nous ce que vous voulez enseigner, pour quel niveau et quelle matière." },
+        { title: "L'IA construit votre leçon", description: "Obtenez instantanément un parcours d'apprentissage complet et aligné sur le programme." }
+      ]
+    },
+    socialProof: {
+      title: "Reconnu par les éducateurs à travers l'Amérique du Nord",
+      testimonials: [
+        { quote: "IDÉLLIA me fait gagner 6 heures par semaine — je peux enfin me concentrer sur l'enseignement au lieu de chercher des ressources.", role: "Enseignante 5e année" },
+        { quote: "La pertinence culturelle du contenu est inégalée. Mes élèves se voient enfin dans le programme.", role: "Histoire Secondaire" },
+        { quote: "Préparer une leçon prend des minutes, pas des heures. Les suggestions de l'IA sont étonnamment précises.", role: "Immersion Française" }
+      ]
+    },
+    features: {
+      title: "Conçu pour les Écoles Modernes",
+      subtitle: "Tout ce dont vous avez besoin pour dispenser des leçons engageantes de haute qualité.",
+      items: [
+        { title: "Aligné au Programme", description: "Chaque ressource est vérifiée et mappée à des résultats d'apprentissage spécifiques." },
+        { title: "Confidentialité Avant Tout", description: "Aucune collecte de données élèves. Accès anonyme via codes de classe." },
+        { title: "Culturellement Pertinent", description: "Priorité aux voix diverses et au contenu autochtone local." },
+        { title: "Prêt pour Google Classroom", description: "Intégration transparente avec vos outils et LMS existants." },
+        { title: "Inclusif & Accessible", description: "Conçu pour tous les apprenants avec des fonctionnalités d'accessibilité intégrées." },
+        { title: "Facile pour l'Admin", description: "Déploiement et gestion faciles pour les écoles et les districts." }
+      ]
+    },
+    risk: {
+      badge: "Garantie de Sécurité",
+      title: "Sûr, Sécurisé et Conçu pour les Écoles",
+      subtitle: "Nous prenons la confidentialité des élèves au sérieux. Notre plateforme respecte les normes de sécurité les plus strictes.",
+      items: [
+        { title: "Aucune Donnée Élève Stockée", description: "Nous ne collectons ni ne stockons jamais de PII des élèves. L'accès est totalement anonyme." },
+        { title: "Conforme FERPA / COPPA", description: "Conforme à toutes les principales réglementations et normes de confidentialité des élèves." },
+        { title: "Architecture Privacy-First", description: "Construit dès le départ avec la sécurité et la confidentialité comme principes fondamentaux." },
+        { title: "Approuvé par les Écoles", description: "Vérifié et approuvé par les administrateurs de district à travers le pays." }
+      ]
+    },
+    role: {
+      title: "En tant que qui vous inscrivez-vous ?",
+      educator: {
+        title: "Éducateur",
+        desc: "Créez des plans de cours structurés, découvrez des ressources et déployez-les instantanément dans votre classe.",
+        cta: "Commencer"
+      },
+      student: {
+        title: "Élève",
+        desc: "Entrez votre code de classe pour accéder à votre parcours d'apprentissage personnalisé.",
+        cta: "Rejoindre la classe"
+      }
+    },
+    footer: {
+      poweredBy: "Propulsé par IDÉLLO",
+      text: "IDÉLLIA utilise la bibliothèque de plus de 15 000 ressources certifiées d'IDÉLLO pour garantir une sécurité pédagogique à 100%.",
+      privacy: "Confidentialité",
+      terms: "Conditions"
+    }
+  }
+};
+
 const AnimatedCounter = ({ end, duration = 2000, prefix = "", suffix = "" }: { end: number, duration?: number, prefix?: string, suffix?: string }) => {
   const [count, setCount] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
@@ -53,29 +265,32 @@ const AnimatedCounter = ({ end, duration = 2000, prefix = "", suffix = "" }: { e
   );
 };
 
-const SocialProof = () => {
+const SocialProof = ({ t }: { t: typeof translations['EN']['socialProof'] }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
 
   const testimonials = [
     {
-      quote: "IDÉLLIA saves me 6 hours a week — I can finally focus on teaching instead of searching for resources.",
+      quote: t.testimonials[0].quote,
       author: "Sarah Jenkins",
-      role: "Grade 5 Teacher",
-      school: "Westwood Elementary"
+      role: t.testimonials[0].role,
+      school: "Westwood Elementary",
+      avatar: "S"
     },
     {
-      quote: "The cultural relevance of the content is unmatched. My students finally see themselves in the curriculum.",
+      quote: t.testimonials[1].quote,
       author: "David Chen",
-      role: "High School History",
-      school: "Oak Ridge District"
+      role: t.testimonials[1].role,
+      school: "Oak Ridge District",
+      avatar: "D"
     },
     {
-      quote: "Setting up a lesson takes minutes, not hours. The AI suggestions are surprisingly accurate.",
+      quote: t.testimonials[2].quote,
       author: "Marie Dubois",
-      role: "French Immersion",
-      school: "École Saint-Laurent"
+      role: t.testimonials[2].role,
+      school: "École Saint-Laurent",
+      avatar: "M"
     }
   ];
 
@@ -112,7 +327,7 @@ const SocialProof = () => {
 
       <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
         <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] mb-16">
-          Trusted by Educators Across North America
+          {t.title}
         </h2>
 
         {/* Logos */}
@@ -150,7 +365,7 @@ const SocialProof = () => {
                  </p>
                  <div className="flex items-center gap-4">
                    <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#00b6ff] to-blue-600 flex items-center justify-center text-white font-bold text-xl shadow-md">
-                     {t.author.charAt(0)}
+                     {t.avatar}
                    </div>
                    <div className="text-left">
                      <div className="font-bold text-[#0F172A] text-lg">{t.author}</div>
@@ -188,22 +403,22 @@ const SocialProof = () => {
   );
 };
 
-const HowItWorks = () => {
+const HowItWorks = ({ t }: { t: typeof translations['EN']['howItWorks'] }) => {
   const steps = [
     {
       icon: <UserPlus className="w-8 h-8 text-white" />,
-      title: "Sign up in 60 seconds",
-      description: "Create your free account and get instant access to the platform."
+      title: t.steps[0].title,
+      description: t.steps[0].description
     },
     {
       icon: <Search className="w-8 h-8 text-white" />,
-      title: "Enter your lesson topic",
-      description: "Tell us what you want to teach, for which grade and subject."
+      title: t.steps[1].title,
+      description: t.steps[1].description
     },
     {
       icon: <Wand2 className="w-8 h-8 text-white" />,
-      title: "AI builds your lesson",
-      description: "Get a complete, curriculum-aligned learning journey instantly."
+      title: t.steps[2].title,
+      description: t.steps[2].description
     }
   ];
 
@@ -212,10 +427,10 @@ const HowItWorks = () => {
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] mb-4">
-            How It Works
+            {t.title}
           </h2>
           <p className="text-lg text-slate-500 max-w-2xl mx-auto">
-            From idea to classroom-ready lesson in three simple steps.
+            {t.subtitle}
           </p>
         </div>
 
@@ -248,37 +463,37 @@ const HowItWorks = () => {
   );
 };
 
-const FeatureGrid = () => {
+const FeatureGrid = ({ t }: { t: typeof translations['EN']['features'] }) => {
   const features = [
     {
       icon: <BookOpen className="w-6 h-6 text-[#00b6ff]" />,
-      title: "Curriculum-Aligned",
-      description: "Every resource is vetted and mapped to specific learning outcomes."
+      title: t.items[0].title,
+      description: t.items[0].description
     },
     {
       icon: <ShieldCheck className="w-6 h-6 text-[#00b6ff]" />,
-      title: "Privacy-First",
-      description: "No student data collection. Anonymous access via class codes."
+      title: t.items[1].title,
+      description: t.items[1].description
     },
     {
       icon: <Sparkles className="w-6 h-6 text-[#00b6ff]" />,
-      title: "Culturally Relevant",
-      description: "Prioritizing diverse voices and local indigenous content."
+      title: t.items[2].title,
+      description: t.items[2].description
     },
     {
       icon: <School className="w-6 h-6 text-[#00b6ff]" />,
-      title: "Google Classroom Ready",
-      description: "Seamlessly integrate with your existing LMS and tools."
+      title: t.items[3].title,
+      description: t.items[3].description
     },
     {
       icon: <Accessibility className="w-6 h-6 text-[#00b6ff]" />,
-      title: "Inclusive & Accessible",
-      description: "Designed for all learners with built-in accessibility features."
+      title: t.items[4].title,
+      description: t.items[4].description
     },
     {
       icon: <Settings className="w-6 h-6 text-[#00b6ff]" />,
-      title: "Admin-Friendly",
-      description: "Easy deployment and management for schools and districts."
+      title: t.items[5].title,
+      description: t.items[5].description
     }
   ];
 
@@ -287,10 +502,10 @@ const FeatureGrid = () => {
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] mb-4">
-            Built for Modern Schools
+            {t.title}
           </h2>
           <p className="text-lg text-slate-500 max-w-2xl mx-auto">
-            Everything you need to deliver high-quality, engaging lessons.
+            {t.subtitle}
           </p>
         </div>
 
@@ -319,27 +534,27 @@ const FeatureGrid = () => {
   );
 };
 
-const RiskReversal = () => {
+const RiskReversal = ({ t }: { t: typeof translations['EN']['risk'] }) => {
   const items = [
     {
       icon: <Lock className="w-6 h-6 text-green-600" />,
-      title: "No Student Data Stored",
-      description: "We never collect or store PII from students. Access is completely anonymous."
+      title: t.items[0].title,
+      description: t.items[0].description
     },
     {
       icon: <FileCheck className="w-6 h-6 text-green-600" />,
-      title: "FERPA / COPPA Ready",
-      description: "Compliant with all major student privacy regulations and standards."
+      title: t.items[1].title,
+      description: t.items[1].description
     },
     {
       icon: <Server className="w-6 h-6 text-green-600" />,
-      title: "Privacy-First Architecture",
-      description: "Built from the ground up with security and privacy as core principles."
+      title: t.items[2].title,
+      description: t.items[2].description
     },
     {
       icon: <UserCheck className="w-6 h-6 text-green-600" />,
-      title: "Trusted by Schools",
-      description: "Vetted and approved by district administrators across the country."
+      title: t.items[3].title,
+      description: t.items[3].description
     }
   ];
 
@@ -348,13 +563,13 @@ const RiskReversal = () => {
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-12">
           <div className="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold uppercase tracking-wider mb-4">
-            <ShieldCheck className="w-4 h-4 mr-2" /> Security Guarantee
+            <ShieldCheck className="w-4 h-4 mr-2" /> {t.badge}
           </div>
           <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] mb-4">
-            Safe, Secure, and Built for Schools
+            {t.title}
           </h2>
           <p className="text-lg text-slate-500 max-w-2xl mx-auto">
-            We take student privacy seriously. Our platform is designed to meet the strictest security standards.
+            {t.subtitle}
           </p>
         </div>
 
@@ -374,12 +589,12 @@ const RiskReversal = () => {
   );
 };
 
-const RoleSelection = () => {
+const RoleSelection = ({ t }: { t: typeof translations['EN']['role'] }) => {
   return (
     <div className="w-full bg-[#F8FAFC] py-24 border-b border-slate-200">
       <div className="max-w-4xl mx-auto px-6 text-center">
         <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] mb-12">
-          Who are you signing up as?
+          {t.title}
         </h2>
 
         <div className="grid md:grid-cols-2 gap-8">
@@ -390,13 +605,13 @@ const RoleSelection = () => {
               <div className="w-20 h-20 rounded-2xl bg-[#00b6ff]/10 flex items-center justify-center mb-6 group-hover:scale-110 transition duration-300">
                 <GraduationCap className="w-10 h-10 text-[#00b6ff]" />
               </div>
-              <h3 className="text-2xl font-bold text-[#0F172A] mb-3">Educator</h3>
+              <h3 className="text-2xl font-bold text-[#0F172A] mb-3">{t.educator.title}</h3>
               <p className="text-slate-500 mb-8 leading-relaxed">
-                Create structured lesson plans, discover resources, and deploy to your class instantly.
+                {t.educator.desc}
               </p>
               <div className="mt-auto w-full">
                 <div className="w-full py-3 bg-[#00b6ff] text-white rounded-xl font-bold shadow-lg shadow-[#00b6ff]/20 group-hover:bg-[#0095d1] transition-colors flex items-center justify-center">
-                  Get Started <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                  {t.educator.cta} <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
                 </div>
               </div>
             </div>
@@ -409,13 +624,13 @@ const RoleSelection = () => {
               <div className="w-20 h-20 rounded-2xl bg-[#00b6ff]/10 flex items-center justify-center mb-6 group-hover:scale-110 transition duration-300">
                 <Users className="w-10 h-10 text-[#00b6ff]" />
               </div>
-              <h3 className="text-2xl font-bold text-[#0F172A] mb-3">Student</h3>
+              <h3 className="text-2xl font-bold text-[#0F172A] mb-3">{t.student.title}</h3>
               <p className="text-slate-500 mb-8 leading-relaxed">
-                Enter your class code to access your personalized learning journey.
+                {t.student.desc}
               </p>
               <div className="mt-auto w-full">
                 <div className="w-full py-3 bg-white text-[#00b6ff] border-2 border-[#00b6ff] rounded-xl font-bold hover:bg-[#00b6ff]/5 transition-colors flex items-center justify-center">
-                  Join Class <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                  {t.student.cta} <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
                 </div>
               </div>
             </div>
@@ -438,6 +653,8 @@ export default function LandingPage() {
   const [password, setPassword] = useState('');
   const [isSigningUp, setIsSigningUp] = useState(false);
   const [signupSuccess, setSignupSuccess] = useState(false);
+
+  const t = translations[language];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -496,7 +713,7 @@ export default function LandingPage() {
           {/* Center: Pricing & Class Code (Desktop) */}
           <div className="hidden md:flex items-center gap-8">
             <Link href="#" className="text-sm font-medium text-slate-600 hover:text-[#00b6ff] transition-colors">
-              Pricing
+              {t.nav.pricing}
             </Link>
             
             <form onSubmit={handleJoinClass} className="relative group">
@@ -507,7 +724,7 @@ export default function LandingPage() {
                 type="text"
                 value={classCode}
                 onChange={(e) => setClassCode(e.target.value)}
-                placeholder="Enter Class Code"
+                placeholder={t.nav.enterCode}
                 className="pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-full text-sm focus:outline-none focus:border-[#00b6ff] focus:ring-2 focus:ring-[#00b6ff]/10 w-48 transition-all shadow-sm"
                 maxLength={6}
               />
@@ -527,14 +744,14 @@ export default function LandingPage() {
             <div className="h-4 w-px bg-slate-200"></div>
             
             <Link href="/educator" className="text-sm font-medium text-slate-600 hover:text-[#00b6ff] transition-colors">
-              Log in
+              {t.nav.login}
             </Link>
             
             <Button 
               onClick={() => router.push('/educator')}
               className="bg-[#00b6ff] hover:bg-[#0095d1] text-white px-5 py-2 rounded-full text-sm font-bold shadow-lg shadow-[#00b6ff]/20"
             >
-              Sign Up Free
+              {t.nav.signup}
             </Button>
           </div>
 
@@ -551,7 +768,7 @@ export default function LandingPage() {
         {mobileMenuOpen && (
           <div className="absolute top-full left-0 right-0 bg-white border-b border-slate-100 shadow-lg p-6 md:hidden flex flex-col gap-6 animate-fade-in-up">
             <Link href="#" className="text-base font-medium text-slate-600 hover:text-[#00b6ff]">
-              Pricing
+              {t.nav.pricing}
             </Link>
             
             <form onSubmit={handleJoinClass} className="relative">
@@ -562,7 +779,7 @@ export default function LandingPage() {
                 type="text"
                 value={classCode}
                 onChange={(e) => setClassCode(e.target.value)}
-                placeholder="Enter Class Code"
+                placeholder={t.nav.enterCode}
                 className="pl-9 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#00b6ff] w-full"
                 maxLength={6}
               />
@@ -583,14 +800,14 @@ export default function LandingPage() {
               </div>
               
               <Link href="/educator" className="text-center py-3 text-slate-600 font-medium hover:text-[#00b6ff]">
-                Log in
+                {t.nav.login}
               </Link>
               
               <Button 
                 onClick={() => router.push('/educator')}
                 className="w-full bg-[#00b6ff] hover:bg-[#0095d1] text-white py-3 rounded-xl font-bold shadow-lg shadow-[#00b6ff]/20"
               >
-                Sign Up Free
+                {t.nav.signup}
               </Button>
             </div>
           </div>
@@ -611,30 +828,24 @@ export default function LandingPage() {
           {/* Left Column: Value + Signup */}
           <div className="flex flex-col text-left z-10 animate-fade-in-up">
              <h1 className="text-4xl lg:text-6xl font-bold tracking-tight text-[#0F172A] mb-6 leading-tight">
-               Create a Classroom-Ready Lesson in <span className="text-[#00b6ff]">Under 2 Minutes</span>
+               {t.hero.headline} <span className="text-[#00b6ff]">{t.hero.headlineHighlight}</span>
              </h1>
              <p className="text-lg text-slate-600 mb-8 max-w-lg leading-relaxed">
-               AI-powered lesson creation that saves teachers 5+ hours per week.
+               {t.hero.subtext}
              </p>
 
              {/* Signup Card */}
              <div className="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 relative overflow-hidden">
                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#00b6ff] to-blue-400"></div>
-               <div className="text-sm font-bold text-[#00b6ff] uppercase tracking-wider mb-6">Start free — built for educators</div>
+               <div className="text-sm font-bold text-[#00b6ff] uppercase tracking-wider mb-6">{t.hero.signupLabel}</div>
                
                <ul className="space-y-3 mb-8">
-                 <li className="flex items-center text-slate-700 font-medium">
-                   <CheckCircle className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
-                   Save hours on lesson planning
-                 </li>
-                 <li className="flex items-center text-slate-700 font-medium">
-                   <CheckCircle className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
-                   Curriculum-aligned automatically
-                 </li>
-                 <li className="flex items-center text-slate-700 font-medium">
-                   <CheckCircle className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
-                   No student data collected
-                 </li>
+                 {t.hero.benefits.map((benefit, i) => (
+                   <li key={i} className="flex items-center text-slate-700 font-medium">
+                     <CheckCircle className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+                     {benefit}
+                   </li>
+                 ))}
                </ul>
 
                <form onSubmit={handleTeacherSignup} className="space-y-4">
@@ -642,7 +853,7 @@ export default function LandingPage() {
                     type="email" 
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your work email" 
+                    placeholder={t.hero.emailPlaceholder}
                     className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#00b6ff] focus:ring-4 focus:ring-[#00b6ff]/10 outline-none transition-all"
                     required
                     disabled={isSigningUp || signupSuccess}
@@ -651,7 +862,7 @@ export default function LandingPage() {
                     type="password" 
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Create a password" 
+                    placeholder={t.hero.passwordPlaceholder}
                     className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#00b6ff] focus:ring-4 focus:ring-[#00b6ff]/10 outline-none transition-all"
                     required
                     disabled={isSigningUp || signupSuccess}
@@ -662,14 +873,14 @@ export default function LandingPage() {
                   >
                     {isSigningUp ? (
                       <span className="flex items-center justify-center">
-                        <Loader2 className="w-5 h-5 mr-2 animate-spin" /> Creating Account...
+                        <Loader2 className="w-5 h-5 mr-2 animate-spin" /> {t.hero.creating}
                       </span>
                     ) : signupSuccess ? (
                       <span className="flex items-center justify-center">
-                        <CheckCircle className="w-5 h-5 mr-2" /> Success! Redirecting...
+                        <CheckCircle className="w-5 h-5 mr-2" /> {t.hero.success}
                       </span>
                     ) : (
-                      'Start Free & Create My First Lesson →'
+                      t.hero.cta
                     )}
                   </Button>
                </form>
@@ -686,7 +897,7 @@ export default function LandingPage() {
                </div>
 
                <div className="mt-6 text-xs text-slate-400 text-center font-medium">
-                 No credit card • Free forever tier • Setup in 60 seconds
+                 {t.hero.microTrust}
                </div>
              </div>
           </div>
@@ -699,7 +910,7 @@ export default function LandingPage() {
              {/* Floating Label */}
              <div className="absolute -top-6 -right-6 z-20 bg-[#0F172A] text-white px-4 py-2 rounded-lg shadow-xl text-sm font-bold transform rotate-3 flex items-center animate-bounce">
                <Sparkles className="w-4 h-4 text-[#00b6ff] mr-2" />
-               This is what you’ll build after signup
+               {t.hero.previewLabel}
              </div>
 
              {/* Mock UI Card */}
@@ -711,8 +922,8 @@ export default function LandingPage() {
                       <PieChart className="w-5 h-5" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-sm text-[#0F172A]">Grade 5 Fractions</h3>
-                      <p className="text-xs text-slate-500">Interactive Lesson</p>
+                      <h3 className="font-bold text-sm text-[#0F172A]">{t.hero.previewTitle}</h3>
+                      <p className="text-xs text-slate-500">{t.hero.previewSubtitle}</p>
                     </div>
                   </div>
                   <div className="flex gap-2">
@@ -730,7 +941,7 @@ export default function LandingPage() {
                     </div>
                     <div className="flex items-center gap-3 text-[#00b6ff] bg-white p-2 rounded-lg shadow-sm border border-slate-100">
                       <Play className="w-4 h-4" />
-                      <span className="text-xs font-bold">Activities</span>
+                      <span className="text-xs font-bold">{t.hero.previewSidebar.activities}</span>
                     </div>
                     <div className="flex items-center gap-3 text-slate-400">
                       <ListChecks className="w-4 h-4" />
@@ -741,8 +952,8 @@ export default function LandingPage() {
                   {/* Main Content */}
                   <div className="flex-1 p-6 flex flex-col">
                     <div className="flex justify-between items-center mb-6">
-                      <h4 className="font-bold text-[#0F172A]">Activity 1: Visualizing Halves</h4>
-                      <span className="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-bold">Student View</span>
+                      <h4 className="font-bold text-[#0F172A]">{t.hero.previewActivity}</h4>
+                      <span className="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-bold">{t.hero.previewStudentView}</span>
                     </div>
 
                     <div className="flex-1 flex flex-col items-center justify-center gap-6">
@@ -759,12 +970,12 @@ export default function LandingPage() {
                           </div>
                         </div>
                       </div>
-                      <p className="text-sm text-slate-500 text-center">Select the shape that represents 1/2</p>
+                      <p className="text-sm text-slate-500 text-center">{t.hero.previewInstruction}</p>
                     </div>
 
                     <div className="mt-auto flex justify-end">
                       <div className="px-4 py-2 bg-[#00b6ff] text-white text-xs font-bold rounded-lg shadow-md">
-                        Next Activity →
+                        {t.hero.previewNext}
                       </div>
                     </div>
                   </div>
@@ -783,63 +994,63 @@ export default function LandingPage() {
               <Clock className="w-6 h-6 text-[#00b6ff]" />
             </div>
             <AnimatedCounter end={5} suffix="+" />
-            <div className="text-sm font-medium text-slate-500 uppercase tracking-wide">Hours Saved / Week</div>
+            <div className="text-sm font-medium text-slate-500 uppercase tracking-wide">{t.roi.hours}</div>
           </div>
           <div className="flex flex-col items-center">
             <div className="mb-3 p-3 bg-[#00b6ff]/10 rounded-full">
               <Zap className="w-6 h-6 text-[#00b6ff]" />
             </div>
             <AnimatedCounter end={2} suffix="x" />
-            <div className="text-sm font-medium text-slate-500 uppercase tracking-wide">Student Engagement</div>
+            <div className="text-sm font-medium text-slate-500 uppercase tracking-wide">{t.roi.engagement}</div>
           </div>
           <div className="flex flex-col items-center">
             <div className="mb-3 p-3 bg-[#00b6ff]/10 rounded-full">
               <Database className="w-6 h-6 text-[#00b6ff]" />
             </div>
             <AnimatedCounter end={15000} suffix="+" />
-            <div className="text-sm font-medium text-slate-500 uppercase tracking-wide">Curated Resources</div>
+            <div className="text-sm font-medium text-slate-500 uppercase tracking-wide">{t.roi.resources}</div>
           </div>
           <div className="flex flex-col items-center">
             <div className="mb-3 p-3 bg-[#00b6ff]/10 rounded-full">
               <Heart className="w-6 h-6 text-[#00b6ff]" />
             </div>
             <AnimatedCounter end={3000} suffix="+" />
-            <div className="text-sm font-medium text-slate-500 uppercase tracking-wide">Teachers Trust Us</div>
+            <div className="text-sm font-medium text-slate-500 uppercase tracking-wide">{t.roi.trust}</div>
           </div>
         </div>
       </div>
 
       {/* How It Works Section */}
-      <HowItWorks />
+      <HowItWorks t={t.howItWorks} />
 
       {/* Social Proof Section */}
-      <SocialProof />
+      <SocialProof t={t.socialProof} />
 
       {/* Feature Grid Section */}
-      <FeatureGrid />
+      <FeatureGrid t={t.features} />
 
       {/* Risk Reversal Section */}
-      <RiskReversal />
+      <RiskReversal t={t.risk} />
 
       {/* Role Selection Section */}
-      <RoleSelection />
+      <RoleSelection t={t.role} />
 
       {/* Footer / Trust Section */}
       <footer className="relative z-10 w-full bg-white border-t border-slate-200 py-12">
         <div className="max-w-4xl mx-auto px-6">
           <div className="bg-[#00b6ff]/5 border border-[#00b6ff]/10 rounded-2xl p-8 text-center">
             <div className="flex items-center justify-center mb-4">
-               <span className="text-sm font-bold tracking-wider text-[#00b6ff] uppercase">Powered by IDÉLLO</span>
+               <span className="text-sm font-bold tracking-wider text-[#00b6ff] uppercase">{t.footer.poweredBy}</span>
             </div>
             <p className="text-slate-700 text-lg font-medium leading-relaxed">
-              IDÉLLIA utilizes the certified 15,000+ resource library of <a href="#" className="text-[#00b6ff] hover:underline font-bold">IDÉLLO</a> to ensure 100% pedagogical safety.
+              {t.footer.text}
             </p>
           </div>
           
           <div className="mt-8 flex justify-center items-center gap-6 text-sm text-slate-400">
              <span>&copy; {new Date().getFullYear()} IDÉLLIA</span>
-             <a href="#" className="hover:text-[#00b6ff] transition-colors">Privacy</a>
-             <a href="#" className="hover:text-[#00b6ff] transition-colors">Terms</a>
+             <a href="#" className="hover:text-[#00b6ff] transition-colors">{t.footer.privacy}</a>
+             <a href="#" className="hover:text-[#00b6ff] transition-colors">{t.footer.terms}</a>
           </div>
         </div>
       </footer>

@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { GraduationCap, Users, ArrowRight, Sparkles, BookOpen, ShieldCheck, BrainCircuit, Menu, X, Globe, Rocket, CheckCircle, Play, Lock, Layout, ListChecks, PieChart, MousePointer2, Loader2, Clock, Zap, Database, Heart, Quote } from 'lucide-react';
+import { GraduationCap, Users, ArrowRight, Sparkles, BookOpen, ShieldCheck, BrainCircuit, Menu, X, Globe, Rocket, CheckCircle, Play, Lock, Layout, ListChecks, PieChart, MousePointer2, Loader2, Clock, Zap, Database, Heart, Quote, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '../components/ui/shared';
 
 const AnimatedCounter = ({ end, duration = 2000, prefix = "", suffix = "" }: { end: number, duration?: number, prefix?: string, suffix?: string }) => {
@@ -53,35 +53,57 @@ const AnimatedCounter = ({ end, duration = 2000, prefix = "", suffix = "" }: { e
   );
 };
 
-const SocialProof = () => {
+const Testimonials = () => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
+
   const testimonials = [
     {
       quote: "IDÉLLIA saves me 6 hours a week — I can finally focus on teaching instead of searching for resources.",
-      author: "Sarah Jenkins",
+      name: "Sarah Jenkins",
       role: "Grade 5 Teacher",
-      school: "Westwood Elementary"
+      location: "Toronto, ON",
+      avatar: "S"
     },
     {
       quote: "The cultural relevance of the content is unmatched. My students finally see themselves in the curriculum.",
-      author: "David Chen",
+      name: "David Chen",
       role: "High School History",
-      school: "Oak Ridge District"
+      location: "Vancouver, BC",
+      avatar: "D"
     },
     {
       quote: "Setting up a lesson takes minutes, not hours. The AI suggestions are surprisingly accurate.",
-      author: "Marie Dubois",
+      name: "Marie Dubois",
       role: "French Immersion",
-      school: "École Saint-Laurent"
+      location: "Montreal, QC",
+      avatar: "M"
     }
   ];
 
+  const next = () => setActiveIndex((current) => (current + 1) % testimonials.length);
+  const prev = () => setActiveIndex((current) => (current - 1 + testimonials.length) % testimonials.length);
+
+  // Autoplay
   useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveIndex((current) => (current + 1) % testimonials.length);
-    }, 6000);
+    const interval = setInterval(next, 6000);
     return () => clearInterval(interval);
-  }, [testimonials.length]);
+  }, []);
+
+  // Swipe handlers
+  const handleTouchStart = (e: React.TouchEvent) => setTouchStart(e.targetTouches[0].clientX);
+  const handleTouchMove = (e: React.TouchEvent) => setTouchEnd(e.targetTouches[0].clientX);
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+    if (isLeftSwipe) next();
+    if (isRightSwipe) prev();
+    setTouchStart(0);
+    setTouchEnd(0);
+  };
 
   return (
     <div className="w-full bg-[#F8FAFC] py-24 border-b border-slate-200 relative overflow-hidden">
@@ -92,26 +114,22 @@ const SocialProof = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
-        <h2 className="text-2xl md:text-3xl font-bold text-[#0F172A] mb-16">
+        <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] mb-16">
           Trusted by Educators Across North America
         </h2>
 
-        {/* Logos */}
-        <div className="flex flex-wrap justify-center items-center gap-12 md:gap-20 mb-20 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
-           <div className="flex items-center gap-2 font-bold text-xl text-slate-600"><div className="w-8 h-8 bg-slate-400 rounded-full"></div> District 9</div>
-           <div className="flex items-center gap-2 font-bold text-xl text-slate-600"><div className="w-8 h-8 bg-slate-400 rounded-md"></div> EduTech</div>
-           <div className="flex items-center gap-2 font-bold text-xl text-slate-600"><div className="w-8 h-8 bg-slate-400 rounded-tr-xl"></div> NorthStar</div>
-           <div className="flex items-center gap-2 font-bold text-xl text-slate-600"><div className="w-8 h-8 bg-slate-400 rounded-bl-xl"></div> FutureLearn</div>
-           <div className="flex items-center gap-2 font-bold text-xl text-slate-600"><div className="w-8 h-8 bg-slate-400 rounded-full border-4 border-slate-200"></div> Academix</div>
-        </div>
-
         {/* Testimonial Carousel */}
-        <div className="max-w-4xl mx-auto relative bg-white rounded-3xl p-8 md:p-12 shadow-xl shadow-slate-200/50 border border-slate-100">
+        <div 
+          className="max-w-4xl mx-auto relative bg-white rounded-3xl p-8 md:p-12 shadow-xl shadow-slate-200/50 border border-slate-100"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
            <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-[#00b6ff] text-white p-3 rounded-full shadow-lg">
              <Quote className="w-6 h-6 fill-current" />
            </div>
            
-           <div className="overflow-hidden relative min-h-[220px] flex items-center justify-center">
+           <div className="overflow-hidden relative min-h-[240px] flex items-center justify-center">
              {testimonials.map((t, i) => (
                <div 
                  key={i}
@@ -125,30 +143,38 @@ const SocialProof = () => {
                    "{t.quote}"
                  </p>
                  <div className="flex items-center gap-4">
-                   <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#00b6ff] to-blue-600 flex items-center justify-center text-white font-bold text-lg shadow-md">
-                     {t.author.charAt(0)}
+                   <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#00b6ff] to-blue-600 flex items-center justify-center text-white font-bold text-xl shadow-md">
+                     {t.avatar}
                    </div>
                    <div className="text-left">
-                     <div className="font-bold text-[#0F172A] text-lg">{t.author}</div>
-                     <div className="text-sm text-slate-500 font-medium">{t.role}, {t.school}</div>
+                     <div className="font-bold text-[#0F172A] text-lg">{t.name}</div>
+                     <div className="text-sm text-slate-500 font-medium">{t.role} • {t.location}</div>
                    </div>
                  </div>
                </div>
              ))}
            </div>
            
-           {/* Indicators */}
-           <div className="flex justify-center gap-2 mt-8">
-             {testimonials.map((_, i) => (
-               <button
-                 key={i}
-                 onClick={() => setActiveIndex(i)}
-                 className={`h-2 rounded-full transition-all duration-300 ${
-                   i === activeIndex ? 'bg-[#00b6ff] w-8' : 'bg-slate-200 w-2 hover:bg-slate-300'
-                 }`}
-                 aria-label={`Go to testimonial ${i + 1}`}
-               />
-             ))}
+           {/* Controls */}
+           <div className="flex justify-center items-center gap-4 mt-8">
+             <button onClick={prev} className="p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-[#00b6ff] transition-colors">
+               <ChevronLeft className="w-5 h-5" />
+             </button>
+             <div className="flex gap-2">
+               {testimonials.map((_, i) => (
+                 <button
+                   key={i}
+                   onClick={() => setActiveIndex(i)}
+                   className={`h-2 rounded-full transition-all duration-300 ${
+                     i === activeIndex ? 'bg-[#00b6ff] w-8' : 'bg-slate-200 w-2 hover:bg-slate-300'
+                   }`}
+                   aria-label={`Go to testimonial ${i + 1}`}
+                 />
+               ))}
+             </div>
+             <button onClick={next} className="p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-[#00b6ff] transition-colors">
+               <ChevronRight className="w-5 h-5" />
+             </button>
            </div>
         </div>
       </div>
@@ -540,7 +566,7 @@ export default function LandingPage() {
       </div>
 
       {/* Social Proof Section */}
-      <SocialProof />
+      <Testimonials />
 
       {/* Features Grid */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 py-24 flex-grow">

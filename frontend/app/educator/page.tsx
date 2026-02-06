@@ -1,138 +1,30 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Sparkles, ArrowLeft, Lightbulb, Search, BookOpen, Clock, GraduationCap, BrainCircuit, LogOut, User } from 'lucide-react';
+import { Sparkles, ArrowLeft, Lightbulb, Search, BookOpen, Clock, GraduationCap, BrainCircuit } from 'lucide-react';
 import { Button, Card } from '../../components/ui/shared';
-import { generateJourney, createJourney } from '../../lib/journeys';
-import {
-  signup,
-  login,
-  logout,
-  isAuthenticated,
-  getEducatorData,
-  type SignupData,
-  type LoginData,
-  type Educator
-} from '../../lib/auth';
+import { generateJourneyFromPrompt } from '../../lib/mockData';
 
 export default function EducatorBuilder() {
   const router = useRouter();
   const [prompt, setPrompt] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
-  
-  // Auth state
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [educator, setEducator] = useState<Educator | null>(null);
-  const [showAuthModal, setShowAuthModal] = useState(false);
-  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
-  const [authLoading, setAuthLoading] = useState(false);
-  const [authError, setAuthError] = useState('');
-  
-  // Auth form state
-  const [authForm, setAuthForm] = useState({
-    email: '',
-    password: '',
-    name: ''
-  });
-
-  useEffect(() => {
-    // Check if user is authenticated on mount
-    const authenticated = isAuthenticated();
-    setIsLoggedIn(authenticated);
-    if (authenticated) {
-      const educatorData = getEducatorData();
-      setEducator(educatorData);
-    }
-  }, []);
 
   const handleGenerate = async () => {
     if (!prompt.trim()) return;
     
-    // Check if user is logged in
-    if (!isLoggedIn) {
-      setShowAuthModal(true);
-      return;
-    }
-    
     setIsGenerating(true);
-    setAuthError('');
-    
     try {
-      // Step 1: Generate the journey (draft)
-      const generatedJourney = await generateJourney(prompt);
-      
-      // Step 2: Save the journey to the database
-      const savedJourney = await createJourney({
-        id: generatedJourney.id,
-        title: generatedJourney.title,
-        subject: generatedJourney.subject,
-        grade: generatedJourney.grade,
-        prompt: prompt,
-        steps: generatedJourney.steps.map(step => ({
-          step_type: step.step_type,
-          resource_id: step.resource.id
-        }))
-      });
-      
-      // Step 3: Redirect to the journey page with the MongoDB ObjectId
-      router.push(`/educator/journey/${savedJourney.id}`);
+      const journey = await generateJourneyFromPrompt(prompt);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(`journey_draft_${journey.id}`, JSON.stringify(journey));
+      }
+      router.push(`/educator/journey/${journey.id}`);
     } catch (error) {
       console.error("Failed to generate journey", error);
-      setAuthError(error instanceof Error ? error.message : 'Failed to generate journey');
       setIsGenerating(false);
     }
-  };
-
-  const handleAuth = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setAuthError('');
-    setAuthLoading(true);
-
-    try {
-      if (authMode === 'signup') {
-        const signupData: SignupData = {
-          email: authForm.email,
-          password: authForm.password,
-          name: authForm.name
-        };
-        const response = await signup(signupData);
-        setEducator(response.educator);
-        setIsLoggedIn(true);
-        setShowAuthModal(false);
-      } else {
-        const loginData: LoginData = {
-          email: authForm.email,
-          password: authForm.password
-        };
-        const response = await login(loginData);
-        setEducator(response.educator);
-        setIsLoggedIn(true);
-        setShowAuthModal(false);
-      }
-      
-      // Reset form
-      setAuthForm({ email: '', password: '', name: '' });
-    } catch (error) {
-      setAuthError(error instanceof Error ? error.message : 'Authentication failed');
-    } finally {
-      setAuthLoading(false);
-    }
-  };
-
-  const handleLogout = async () => {
-    await logout();
-    setIsLoggedIn(false);
-    setEducator(null);
-  };
-
-  const getInitials = (name: string) => {
-    return name
-      .split(' ')
-      .map(n => n[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
   };
 
   const suggestions = [
@@ -143,9 +35,9 @@ export default function EducatorBuilder() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-[#00b6ff]/5 text-[#0F172A] font-sans">
+    <div className="min-h-screen bg-[#F8FAFC] text-[#0F172A] font-sans">
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-10 shadow-sm">
+      <header className="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="sm" onClick={() => router.push('/')} className="text-slate-500 hover:text-[#0F172A]">
@@ -157,7 +49,7 @@ export default function EducatorBuilder() {
                 <BrainCircuit className="w-5 h-5 text-white" />
               </div>
               <span className="font-bold text-xl tracking-tight text-[#0F172A]">
-                IDÉLL<span className="text-[#00b6ff]">IA</span>
+                IDÉLLIA
               </span>
             </div>
           </div>
@@ -166,32 +58,9 @@ export default function EducatorBuilder() {
               <GraduationCap className="w-3 h-3 mr-1.5" />
               Educator Mode
             </div>
-            
-            {isLoggedIn && educator ? (
-              <div className="flex items-center gap-2">
-                <span className="hidden sm:inline text-sm font-medium text-slate-600">{educator.name}</span>
-                <div className="w-8 h-8 rounded-full bg-[#00b6ff] text-white flex items-center justify-center text-sm font-bold shadow-md">
-                  {getInitials(educator.name)}
-                </div>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={handleLogout}
-                  className="text-slate-500 hover:text-red-600"
-                >
-                  <LogOut className="w-4 h-4" />
-                </Button>
-              </div>
-            ) : (
-              <Button 
-                onClick={() => setShowAuthModal(true)}
-                size="sm"
-                className="bg-[#00b6ff] hover:bg-[#0095d1] text-white"
-              >
-                <User className="w-4 h-4 mr-2" />
-                Login
-              </Button>
-            )}
+            <div className="w-8 h-8 rounded-full bg-[#00b6ff] text-white flex items-center justify-center text-sm font-bold shadow-md">
+              JD
+            </div>
           </div>
         </div>
       </header>
@@ -224,7 +93,7 @@ export default function EducatorBuilder() {
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 placeholder="Describe your lesson topic, grade level, and learning goals... (e.g., 'Create a 45-minute interactive lesson on the solar system for Grade 5, focusing on Mars exploration and including a hands-on activity.')"
-                className="w-full h-48 p-5 text-lg text-slate-700 placeholder:text-slate-400 bg-[#F8FAFC] rounded-xl border border-slate-200 focus:border-[#00b6ff] focus:ring-4 focus:ring-[#00b6ff]/20 focus:shadow-[0_0_15px_rgba(0,182,255,0.15)] outline-none resize-none transition-all duration-200 ease-in-out"
+                className="w-full h-48 p-5 text-lg text-slate-700 placeholder:text-slate-400 bg-[#F8FAFC] rounded-xl border border-slate-200 focus:border-[#00b6ff] focus:ring-4 focus:ring-[#00b6ff]/10 outline-none resize-none transition-all duration-200 ease-in-out"
                 maxLength={500}
                 disabled={isGenerating}
               />
@@ -283,112 +152,7 @@ export default function EducatorBuilder() {
         </div>
 
       </main>
-
-      {/* Auth Modal */}
-      {showAuthModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 animate-fade-in-up">
-            <h2 className="text-2xl font-bold text-[#0F172A] mb-2">
-              {authMode === 'login' ? 'Welcome Back' : 'Create Account'}
-            </h2>
-            <p className="text-slate-500 mb-6">
-              {authMode === 'login' 
-                ? 'Sign in to access your learning journeys' 
-                : 'Join IDÉLLIA to start creating amazing learning experiences'}
-            </p>
-
-            {authError && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
-                {authError}
-              </div>
-            )}
-
-            <form onSubmit={handleAuth} className="space-y-4">
-              {authMode === 'signup' && (
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">
-                    Full Name
-                  </label>
-                  <input
-                    type="text"
-                    value={authForm.name}
-                    onChange={(e) => setAuthForm({ ...authForm, name: e.target.value })}
-                    className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-[#00b6ff] focus:ring-4 focus:ring-[#00b6ff]/20 outline-none transition-all"
-                    placeholder="John Doe"
-                    required
-                  />
-                </div>
-              )}
-
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  value={authForm.email}
-                  onChange={(e) => setAuthForm({ ...authForm, email: e.target.value })}
-                  className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-[#00b6ff] focus:ring-4 focus:ring-[#00b6ff]/20 outline-none transition-all"
-                  placeholder="educator@school.com"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Password
-                </label>
-                <input
-                  type="password"
-                  value={authForm.password}
-                  onChange={(e) => setAuthForm({ ...authForm, password: e.target.value })}
-                  className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-[#00b6ff] focus:ring-4 focus:ring-[#00b6ff]/20 outline-none transition-all"
-                  placeholder="••••••••"
-                  minLength={8}
-                  required
-                />
-                {authMode === 'signup' && (
-                  <p className="text-xs text-slate-500 mt-1">Minimum 8 characters</p>
-                )}
-              </div>
-
-              <Button
-                type="submit"
-                disabled={authLoading}
-                isLoading={authLoading}
-                className="w-full bg-[#00b6ff] hover:bg-[#0095d1] text-white py-3 rounded-lg font-semibold"
-              >
-                {authMode === 'login' ? 'Sign In' : 'Create Account'}
-              </Button>
-            </form>
-
-            <div className="mt-6 text-center">
-              <button
-                onClick={() => {
-                  setAuthMode(authMode === 'login' ? 'signup' : 'login');
-                  setAuthError('');
-                }}
-                className="text-sm text-[#00b6ff] hover:underline"
-              >
-                {authMode === 'login' 
-                  ? "Don't have an account? Sign up" 
-                  : 'Already have an account? Sign in'}
-              </button>
-            </div>
-
-            <button
-              onClick={() => {
-                setShowAuthModal(false);
-                setAuthError('');
-                setAuthForm({ email: '', password: '', name: '' });
-              }}
-              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600"
-            >
-              ✕
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
+

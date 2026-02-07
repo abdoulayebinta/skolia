@@ -360,45 +360,100 @@ export default function StudentPlayer() {
         <div className="flex-1 overflow-y-auto p-4 md:p-8 flex flex-col items-center justify-center relative z-10">
           <div className="w-full max-w-4xl bg-white rounded-3xl shadow-xl shadow-slate-200/60 border border-slate-200 overflow-hidden flex flex-col h-[60vh] md:h-[75vh]">
             {/* Content Viewer */}
-            <div className="flex-1 bg-slate-900 relative group overflow-hidden">
-              <div
-                className={`absolute inset-0 opacity-40 ${
-                  currentResource.type === 'video'
-                    ? 'bg-red-900'
-                    : currentResource.type === 'game'
-                      ? 'bg-purple-900'
-                      : 'bg-blue-900'
-                }`}
-              ></div>
+            <div className="flex-1 bg-slate-900 relative overflow-hidden">
+              {currentResource.contentUrl ? (
+                // Display actual content based on type
+                currentResource.type === 'video' ? (
+                  <iframe
+                    src={currentResource.contentUrl}
+                    className="w-full h-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    title={currentResource.title}
+                  />
+                ) : currentResource.type === 'podcast' ? (
+                  <div className="w-full h-full flex items-center justify-center p-8">
+                    <div className="w-full max-w-2xl">
+                      <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 mb-6">
+                        <div className="flex items-center justify-center mb-6">
+                          <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center">
+                            <Headphones className="w-10 h-10 text-white" />
+                          </div>
+                        </div>
+                        <h2 className="text-2xl font-bold text-white text-center mb-4">
+                          {currentResource.title}
+                        </h2>
+                        <p className="text-white/80 text-center mb-6">
+                          {currentResource.description}
+                        </p>
+                      </div>
+                      <audio
+                        controls
+                        className="w-full"
+                        src={currentResource.contentUrl}
+                        autoPlay
+                      >
+                        Your browser does not support the audio element.
+                      </audio>
+                    </div>
+                  </div>
+                ) : currentResource.type === 'game' ? (
+                  <iframe
+                    src={currentResource.contentUrl}
+                    className="w-full h-full"
+                    title={currentResource.title}
+                  />
+                ) : (
+                  // For PDFs, books, and other documents
+                  <iframe
+                    src={currentResource.contentUrl}
+                    className="w-full h-full"
+                    title={currentResource.title}
+                  />
+                )
+              ) : (
+                // Fallback placeholder if no contentUrl
+                <>
+                  <div
+                    className={`absolute inset-0 opacity-40 ${
+                      currentResource.type === 'video'
+                        ? 'bg-red-900'
+                        : currentResource.type === 'game'
+                          ? 'bg-purple-900'
+                          : 'bg-blue-900'
+                    }`}
+                  ></div>
 
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-8 text-center z-10">
-                <div className="w-24 h-24 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center mb-6 border-2 border-white/20 shadow-2xl group-hover:scale-110 transition-transform duration-300 cursor-pointer">
-                  {currentResource.type === 'video' && (
-                    <Play className="w-10 h-10 ml-1" />
-                  )}
-                  {currentResource.type === 'game' && (
-                    <Gamepad2 className="w-10 h-10" />
-                  )}
-                  {(currentResource.type === 'book' ||
-                    currentResource.type === 'article') && (
-                    <BookOpen className="w-10 h-10" />
-                  )}
-                  {currentResource.type === 'podcast' && (
-                    <Headphones className="w-10 h-10" />
-                  )}
-                </div>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-8 text-center z-10">
+                    <div className="w-24 h-24 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center mb-6 border-2 border-white/20 shadow-2xl">
+                      {currentResource.type === 'video' && (
+                        <Play className="w-10 h-10 ml-1" />
+                      )}
+                      {currentResource.type === 'game' && (
+                        <Gamepad2 className="w-10 h-10" />
+                      )}
+                      {(currentResource.type === 'book' ||
+                        currentResource.type === 'article') && (
+                        <BookOpen className="w-10 h-10" />
+                      )}
+                      {currentResource.type === 'podcast' && (
+                        <Headphones className="w-10 h-10" />
+                      )}
+                    </div>
 
-                <h2 className="text-3xl md:text-4xl font-bold mb-4 drop-shadow-md">
-                  {currentResource.title}
-                </h2>
-                <p className="text-lg text-white/80 max-w-2xl leading-relaxed drop-shadow-sm">
-                  {currentResource.description}
-                </p>
+                    <h2 className="text-3xl md:text-4xl font-bold mb-4 drop-shadow-md">
+                      {currentResource.title}
+                    </h2>
+                    <p className="text-lg text-white/80 max-w-2xl leading-relaxed drop-shadow-sm mb-4">
+                      {currentResource.description}
+                    </p>
 
-                <div className="mt-8 px-6 py-2 bg-black/30 backdrop-blur-sm rounded-full text-sm font-medium border border-white/10">
-                  Click to interact with this {currentResource.type}
-                </div>
-              </div>
+                    <div className="px-6 py-2 bg-black/30 backdrop-blur-sm rounded-full text-sm font-medium border border-white/10">
+                      Content will be available soon
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
 
             {/* Bottom Controls */}

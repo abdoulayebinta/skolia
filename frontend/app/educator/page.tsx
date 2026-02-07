@@ -11,35 +11,97 @@ import {
   Clock,
   GraduationCap,
   BrainCircuit,
+  LogIn,
+  UserPlus,
 } from 'lucide-react';
-import { Button, Card } from '../../components/ui/shared';
+import { Button } from '../../components/ui/shared';
 import { generateJourney } from '../../lib/journeys';
+import {
+  isAuthenticated,
+  login,
+  signup,
+  getEducatorData,
+} from '../../lib/auth';
 
 export default function EducatorBuilder() {
   const router = useRouter();
   const [prompt, setPrompt] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isAuth, setIsAuth] = useState(false);
+  const [showLogin, setShowLogin] = useState(true);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    // Auto-focus the textarea on mount for immediate engagement
-    if (textareaRef.current) {
+    // Check authentication status
+    const authenticated = isAuthenticated();
+    setIsAuth(authenticated);
+
+    // Auto-focus the textarea on mount if authenticated
+    if (authenticated && textareaRef.current) {
       textareaRef.current.focus();
     }
   }, []);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      await login({ email, password });
+      setIsAuth(true);
+      setEmail('');
+      setPassword('');
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Login failed');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      await signup({ email, password, name: name || email.split('@')[0] });
+      setIsAuth(true);
+      setEmail('');
+      setPassword('');
+      setName('');
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Signup failed');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const handleGenerate = async () => {
     if (!prompt.trim()) return;
 
     setIsGenerating(true);
+    setError(null);
     try {
       const journey = await generateJourney(prompt);
-      // Journey is now saved to the database by generateJourney
-      // Navigate to the preview page with the database ID
       router.push(`/educator/journey/${journey.id}`);
     } catch (error) {
       console.error('Failed to generate journey', error);
       setIsGenerating(false);
+
+      const errorMessage =
+        error instanceof Error ? error.message : 'Failed to generate journey';
+      if (errorMessage.includes('Invalid or expired token')) {
+        setError('Your session has expired. Please log in again.');
+        setIsAuth(false);
+      } else {
+        setError(errorMessage);
+      }
     }
   };
 
@@ -49,6 +111,152 @@ export default function EducatorBuilder() {
     'English: Creative Writing & Story Structure',
     'Indigenous Perspectives: Plant Medicine',
   ];
+
+  // If not authenticated, show login/signup form
+  if (!isAuth) {
+    return (
+      <div className="min-h-screen bg-[#F8FAFC] text-[#0F172A] font-sans">
+        <header className="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
+          <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => router.push('/')}
+                className="text-slate-500 hover:text-[#0F172A]"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" /> Back
+              </Button>
+              <div className="h-6 w-px bg-slate-200 hidden sm:block"></div>
+              <div className="flex items-center gap-2 hidden sm:flex">
+                <div className="w-8 h-8 rounded-lg bg-[#00b6ff] flex items-center justify-center shadow-md shadow-[#00b6ff]/20">
+                  <BrainCircuit className="w-5 h-5 text-white" />
+                </div>
+                <span className="font-bold text-xl tracking-tight text-[#0F172A]">
+                  IDÉLLIA
+                </span>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <main className="max-w-md mx-auto px-4 py-12 sm:py-20">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center p-3 rounded-2xl bg-white shadow-lg shadow-slate-100 mb-6 border border-slate-100">
+              <div className="w-10 h-10 rounded-xl bg-[#00b6ff] flex items-center justify-center text-white">
+                <GraduationCap className="w-6 h-6" />
+              </div>
+            </div>
+            <h1 className="text-3xl sm:text-4xl font-bold text-[#0F172A] mb-4 tracking-tight">
+              {showLogin ? 'Welcome Back' : 'Create Account'}
+            </h1>
+            <p className="text-slate-500 text-lg">
+              {showLogin
+                ? 'Log in to start creating learning journeys'
+                : 'Sign up to start creating learning journeys'}
+            </p>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/60 border border-slate-100 overflow-hidden">
+            <div className="p-1 bg-gradient-to-r from-[#00b6ff] via-cyan-400 to-blue-500 opacity-50"></div>
+
+            <div className="p-6 sm:p-8">
+              {error && (
+                <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                  {error}
+                </div>
+              )}
+
+              <form
+                onSubmit={showLogin ? handleLogin : handleSignup}
+                className="space-y-4"
+              >
+                {!showLogin && (
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Name
+                    </label>
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Your name"
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#00b6ff] focus:ring-4 focus:ring-[#00b6ff]/10 outline-none transition-all"
+                      disabled={isSubmitting}
+                    />
+                  </div>
+                )}
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="your.email@school.edu"
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#00b6ff] focus:ring-4 focus:ring-[#00b6ff]/10 outline-none transition-all"
+                    required
+                    disabled={isSubmitting}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Password
+                  </label>
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#00b6ff] focus:ring-4 focus:ring-[#00b6ff]/10 outline-none transition-all"
+                    required
+                    disabled={isSubmitting}
+                  />
+                </div>
+
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  isLoading={isSubmitting}
+                  className="w-full py-3 bg-[#00b6ff] hover:bg-[#0095d1] text-white shadow-lg shadow-[#00b6ff]/25 border-0 rounded-xl font-semibold"
+                >
+                  {showLogin ? (
+                    <>
+                      <LogIn className="w-5 h-5 mr-2" /> Log In
+                    </>
+                  ) : (
+                    <>
+                      <UserPlus className="w-5 h-5 mr-2" /> Sign Up
+                    </>
+                  )}
+                </Button>
+              </form>
+
+              <div className="mt-6 text-center">
+                <button
+                  onClick={() => {
+                    setShowLogin(!showLogin);
+                    setError(null);
+                  }}
+                  className="text-sm text-slate-600 hover:text-[#00b6ff] transition-colors"
+                >
+                  {showLogin
+                    ? "Don't have an account? Sign up"
+                    : 'Already have an account? Log in'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  // Authenticated view - show journey builder
+  const educatorData = getEducatorData();
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-[#0F172A] font-sans">
@@ -77,10 +285,10 @@ export default function EducatorBuilder() {
           <div className="flex items-center gap-3">
             <div className="hidden sm:flex items-center px-3 py-1 bg-[#00b6ff]/10 text-[#00b6ff] rounded-full text-xs font-medium border border-[#00b6ff]/20">
               <GraduationCap className="w-3 h-3 mr-1.5" />
-              Educator Mode
+              {educatorData?.name || 'Educator'}
             </div>
             <div className="w-8 h-8 rounded-full bg-[#00b6ff] text-white flex items-center justify-center text-sm font-bold shadow-md">
-              JD
+              {educatorData?.name?.charAt(0).toUpperCase() || 'E'}
             </div>
           </div>
         </div>
@@ -109,6 +317,11 @@ export default function EducatorBuilder() {
           <div className="p-1 bg-gradient-to-r from-[#00b6ff] via-cyan-400 to-blue-500 opacity-50"></div>
 
           <div className="p-6 sm:p-8">
+            {error && (
+              <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                {error}
+              </div>
+            )}
             <div className="relative mb-6">
               <textarea
                 ref={textareaRef}

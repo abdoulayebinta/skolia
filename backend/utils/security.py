@@ -13,10 +13,10 @@ ph = PasswordHasher()
 def hash_password(password: str) -> str:
     """
     Hash a password using Argon2.
-    
+
     Args:
         password: Plain text password to hash
-        
+
     Returns:
         Hashed password string
     """
@@ -26,11 +26,11 @@ def hash_password(password: str) -> str:
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """
     Verify a password against its hash using Argon2.
-    
+
     Args:
         plain_password: Plain text password to verify
         hashed_password: Hashed password to verify against
-        
+
     Returns:
         True if password matches, False otherwise
     """
@@ -48,39 +48,39 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 def create_access_token(data: Dict[str, Any], expires_delta: Optional[timedelta] = None) -> str:
     """
     Create a JWT access token.
-    
+
     Args:
         data: Dictionary of data to encode in the token
         expires_delta: Optional custom expiration time
-        
+
     Returns:
         Encoded JWT token string
     """
     to_encode = data.copy()
-    
+
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
         expire = datetime.utcnow() + timedelta(seconds=settings.jwt_expires_in)
-    
+
     to_encode.update({"exp": expire, "iat": datetime.utcnow()})
-    
+
     encoded_jwt = jwt.encode(
         to_encode,
         settings.jwt_secret,
         algorithm="HS256"
     )
-    
+
     return encoded_jwt
 
 
 def decode_access_token(token: str) -> Optional[Dict[str, Any]]:
     """
     Decode and verify a JWT access token.
-    
+
     Args:
         token: JWT token string to decode
-        
+
     Returns:
         Decoded token payload if valid, None otherwise
     """

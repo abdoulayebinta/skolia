@@ -379,13 +379,12 @@ export default function JourneyPreview() {
                   {/* Card */}
                   <div className="flex-1 lg:mt-8 relative">
                     <div
-                      className={`rounded-2xl border-2 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden h-full flex flex-col group-hover:-translate-y-1 cursor-pointer
+                      className={`rounded-2xl border-2 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden h-full flex flex-col group-hover:-translate-y-1
                         ${
                           isTeacherResource
                             ? 'bg-slate-50 border-slate-200 hover:border-slate-300'
                             : 'bg-white border-[#00b6ff]/20 hover:border-[#00b6ff]'
                         }`}
-                      onClick={() => openPreview(step.resource, index)}
                     >
                       {/* Thumbnail Placeholder */}
                       <div
@@ -410,6 +409,7 @@ export default function JourneyPreview() {
                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center backdrop-blur-sm gap-2">
                           <Button
                             onClick={(e) => {
+                              e.preventDefault();
                               e.stopPropagation();
                               openPreview(step.resource, index);
                             }}
@@ -524,10 +524,10 @@ export default function JourneyPreview() {
             subject: previewResource.subject as MockResource['subject'],
             grade: previewResource.grade,
             tags: previewResource.tags || [],
-            thumbnail: previewResource.thumbnail || '',
-            contentUrl: previewResource.content_url || '',
-            alignmentScore: previewResource.alignment_score || 0,
-            culturalRelevance: previewResource.cultural_relevance || false,
+            thumbnail: previewResource.thumbnail,
+            contentUrl: previewResource.content_url,
+            alignmentScore: previewResource.alignment_score,
+            culturalRelevance: previewResource.cultural_relevance,
           }}
           onSwap={
             previewStepIndex !== null && previewResource.audience === 'Student'

@@ -43,21 +43,21 @@ app.add_middleware(
 )
 
 # Include routers
-app.include_router(auth_router, prefix="/api/v1/auth", tags=["Authentication"])
-app.include_router(resources_router, prefix="/api/v1/resources", tags=["Resources"])
-app.include_router(journeys_router, prefix="/api/v1/journeys", tags=["Journeys"])
+app.include_router(auth_router, prefix="/auth", tags=["Authentication"])
+app.include_router(resources_router, prefix="/resources", tags=["Resources"])
+app.include_router(journeys_router, prefix="/journeys", tags=["Journeys"])
 
 
 @app.get("/healthz")
 async def health_check():
     """
     Health check endpoint to verify backend and database connectivity.
-    
+
     Returns:
         dict: Status information including database connection status
     """
     db_status = "connected" if await ping_database() else "disconnected"
-    
+
     return {
         "status": "ok",
         "database": db_status,

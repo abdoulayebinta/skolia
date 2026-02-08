@@ -188,7 +188,7 @@ export default function JourneyPreview() {
         grade: newResource.grade,
         tags: newResource.tags,
         thumbnail: newResource.thumbnail,
-        content_url: newResource.contentUrl,
+        content_url: newResource.contentUrl || '',
         alignment_score: newResource.alignmentScore,
         cultural_relevance: newResource.culturalRelevance || false,
       };

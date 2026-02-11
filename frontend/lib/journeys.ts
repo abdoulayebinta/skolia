@@ -34,15 +34,16 @@ export interface JourneyStep {
 export interface Journey {
   id: string;
   title: string;
-  description: string;
+  description?: string;
   subject: string;
   grade: number;
-  duration_weeks: number;
-  learning_objectives: string[];
+  duration_weeks?: number;
+  learning_objectives?: string[];
+  outcomes?: string[];
   steps: JourneyStep[];
   class_code?: string;
   created_at: string;
-  updated_at: string;
+  updated_at?: string;
 }
 
 /**
@@ -54,7 +55,7 @@ export async function generateJourney(prompt: string): Promise<Journey> {
     throw new Error('Authentication required');
   }
 
-  const response = await fetch(`${API_URL}/journeys/`, {
+  const response = await fetch(`${API_URL}/journeys/generate`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -62,12 +63,6 @@ export async function generateJourney(prompt: string): Promise<Journey> {
     },
     body: JSON.stringify({
       prompt,
-      title: prompt.substring(0, 100),
-      description: prompt,
-      subject: 'General',
-      grade_level: '5',
-      duration_weeks: 1,
-      learning_objectives: ['Learn key concepts'],
     }),
   });
 

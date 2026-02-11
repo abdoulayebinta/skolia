@@ -13,6 +13,7 @@ import {
   BrainCircuit,
   LogIn,
   UserPlus,
+  LogOut,
 } from 'lucide-react';
 import { Button } from '../../components/ui/shared';
 import { generateJourney } from '../../lib/journeys';
@@ -34,7 +35,9 @@ export default function EducatorBuilder() {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Check authentication status
@@ -46,6 +49,29 @@ export default function EducatorBuilder() {
       textareaRef.current.focus();
     }
   }, []);
+
+  // Close user menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        userMenuRef.current &&
+        !userMenuRef.current.contains(event.target as Node)
+      ) {
+        setShowUserMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('educator_data');
+    setIsAuth(false);
+    setShowUserMenu(false);
+    router.push('/');
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -263,32 +289,46 @@ export default function EducatorBuilder() {
       {/* Header */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => router.push('/')}
-              className="text-slate-500 hover:text-[#0F172A]"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" /> Back
-            </Button>
-            <div className="h-6 w-px bg-slate-200 hidden sm:block"></div>
-            <div className="flex items-center gap-2 hidden sm:flex">
-              <div className="w-8 h-8 rounded-lg bg-[#00b6ff] flex items-center justify-center shadow-md shadow-[#00b6ff]/20">
-                <BrainCircuit className="w-5 h-5 text-white" />
-              </div>
-              <span className="font-bold text-xl tracking-tight text-[#0F172A]">
-                IDÉLLIA
-              </span>
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-[#00b6ff] flex items-center justify-center shadow-md shadow-[#00b6ff]/20">
+              <BrainCircuit className="w-5 h-5 text-white" />
             </div>
+            <span className="font-bold text-xl tracking-tight text-[#0F172A]">
+              IDÉLLIA
+            </span>
           </div>
           <div className="flex items-center gap-3">
             <div className="hidden sm:flex items-center px-3 py-1 bg-[#00b6ff]/10 text-[#00b6ff] rounded-full text-xs font-medium border border-[#00b6ff]/20">
               <GraduationCap className="w-3 h-3 mr-1.5" />
-              {educatorData?.name || 'Educator'}
+              Educator Page
             </div>
-            <div className="w-8 h-8 rounded-full bg-[#00b6ff] text-white flex items-center justify-center text-sm font-bold shadow-md">
-              {educatorData?.name?.charAt(0).toUpperCase() || 'E'}
+            <div className="relative" ref={userMenuRef}>
+              <button
+                onClick={() => setShowUserMenu(!showUserMenu)}
+                className="w-8 h-8 rounded-full bg-[#00b6ff] text-white flex items-center justify-center text-sm font-bold shadow-md hover:bg-[#0095d1] transition-colors cursor-pointer"
+              >
+                {educatorData?.name?.charAt(0).toUpperCase() || 'E'}
+              </button>
+
+              {showUserMenu && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-slate-200 py-2 z-50 animate-fade-in-up">
+                  <div className="px-4 py-2 border-b border-slate-100">
+                    <p className="text-sm font-medium text-slate-700">
+                      {educatorData?.name || 'Educator'}
+                    </p>
+                    <p className="text-xs text-slate-500 truncate">
+                      {educatorData?.email || ''}
+                    </p>
+                  </div>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full px-4 py-2 text-left text-sm text-slate-700 hover:bg-slate-50 flex items-center transition-colors"
+                  >
+                    <LogOut className="w-4 h-4 mr-2 text-slate-500" />
+                    Log Out
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>

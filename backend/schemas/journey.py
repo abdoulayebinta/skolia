@@ -10,7 +10,7 @@ from schemas.resource import ResourceResponse
 class GenerateJourneyRequest(BaseModel):
     """Request schema for generating a journey from a prompt."""
     prompt: str = Field(..., min_length=1, max_length=500, description="Educator's lesson description")
-    
+
     class Config:
         json_schema_extra = {
             "example": {
@@ -23,7 +23,7 @@ class JourneyStepRequest(BaseModel):
     """Request schema for a journey step (for creating/updating journeys)."""
     step_type: str = Field(..., description="Step type: Preparation, Hook, Instruction, Application")
     resource_id: str = Field(..., description="Resource ID for this step")
-    
+
     class Config:
         from_attributes = True
 
@@ -35,7 +35,7 @@ class CreateJourneyRequest(BaseModel):
     grade: int = Field(..., ge=1, le=12)
     prompt: str = Field(..., description="Original educator prompt")
     steps: List[JourneyStepRequest] = Field(..., description="Journey steps")
-    
+
     class Config:
         json_schema_extra = {
             "example": {
@@ -57,7 +57,7 @@ class UpdateJourneyRequest(BaseModel):
     """Request schema for updating an existing journey."""
     title: Optional[str] = Field(None, min_length=1, max_length=200)
     steps: Optional[List[JourneyStepRequest]] = Field(None, description="Updated journey steps")
-    
+
     class Config:
         json_schema_extra = {
             "example": {
@@ -75,7 +75,7 @@ class JourneyStepResponse(BaseModel):
     """Response schema for a single journey step with full resource details."""
     step_type: str = Field(..., description="Step type: Preparation, Hook, Instruction, Application")
     resource: ResourceResponse = Field(..., description="Full resource details for this step")
-    
+
     class Config:
         from_attributes = True
 
@@ -86,10 +86,12 @@ class JourneyResponse(BaseModel):
     title: str
     grade: int
     subject: str
+    learning_objectives: List[str] = Field(default_factory=list, description="Learning objectives for this journey")
+    outcomes: List[str] = Field(default_factory=list, description="Expected learning outcomes")
     steps: List[JourneyStepResponse]
     created_at: str = Field(..., description="ISO 8601 timestamp")
     class_code: Optional[str] = None
-    
+
     class Config:
         from_attributes = True
         json_schema_extra = {

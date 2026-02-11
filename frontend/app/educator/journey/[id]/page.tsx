@@ -306,8 +306,67 @@ export default function JourneyPreview() {
       </header>
 
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 py-12">
+        {/* Learning Objectives and Outcomes Section */}
+        <div className="mb-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Learning Objectives */}
+          <div className="bg-white rounded-2xl border-2 border-[#00b6ff]/20 p-6 shadow-sm">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 bg-[#00b6ff]/10 rounded-lg">
+                <BookOpen className="w-5 h-5 text-[#00b6ff]" />
+              </div>
+              <h2 className="font-bold text-xl text-[#0F172A]">
+                Learning Objectives
+              </h2>
+            </div>
+            <ul className="space-y-3">
+              {journey.learning_objectives &&
+              journey.learning_objectives.length > 0 ? (
+                journey.learning_objectives.map((objective, index) => (
+                  <li key={index} className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-[#00b6ff] flex-shrink-0 mt-0.5" />
+                    <span className="text-slate-700 text-sm leading-relaxed">
+                      {objective}
+                    </span>
+                  </li>
+                ))
+              ) : (
+                <li className="text-slate-500 text-sm italic">
+                  No learning objectives defined
+                </li>
+              )}
+            </ul>
+          </div>
+
+          {/* Outcomes */}
+          <div className="bg-white rounded-2xl border-2 border-emerald-500/20 p-6 shadow-sm">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 bg-emerald-500/10 rounded-lg">
+                <CheckCircle className="w-5 h-5 text-emerald-600" />
+              </div>
+              <h2 className="font-bold text-xl text-[#0F172A]">Outcomes</h2>
+            </div>
+            <ul className="space-y-3">
+              {journey.outcomes && journey.outcomes.length > 0 ? (
+                journey.outcomes.map((outcome, index) => (
+                  <li key={index} className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
+                    <span className="text-slate-700 text-sm leading-relaxed">
+                      {outcome}
+                    </span>
+                  </li>
+                ))
+              ) : (
+                <li className="text-slate-500 text-sm italic">
+                  No outcomes defined
+                </li>
+              )}
+            </ul>
+          </div>
+        </div>
+
+        {/* Journey Steps Section */}
         <div className="mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <h2 className="font-bold text-2xl text-[#0F172A]">Journey Map</h2>
+          <h2 className="font-bold text-2xl text-[#0F172A]">Journey Steps</h2>
 
           {/* Stats Box */}
           <div className="flex items-center gap-4 bg-white px-5 py-3 rounded-xl border border-slate-200 shadow-sm">

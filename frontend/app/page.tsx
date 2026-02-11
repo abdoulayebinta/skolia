@@ -895,6 +895,16 @@ export default function LandingPage() {
 
   const t = translations[language];
 
+  // Check if user is logged in and redirect to educator dashboard
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('auth_token');
+      if (token) {
+        router.push('/educator');
+      }
+    }
+  }, [router]);
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
@@ -955,14 +965,22 @@ export default function LandingPage() {
       >
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
           {/* Left: Logo */}
-          <div className="flex items-center gap-2">
+          <button
+            onClick={() => {
+              const token = localStorage.getItem('auth_token');
+              if (token) {
+                router.push('/educator');
+              }
+            }}
+            className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
+          >
             <div className="w-8 h-8 rounded-lg bg-[#00b6ff] flex items-center justify-center shadow-md shadow-[#00b6ff]/20">
               <BrainCircuit className="w-5 h-5 text-white" />
             </div>
             <span className="font-bold text-xl tracking-tight text-[#0F172A]">
               IDÉLL<span className="text-[#00b6ff]">IA</span>
             </span>
-          </div>
+          </button>
 
           {/* Center: Pricing & Class Code (Desktop) */}
           <div className="hidden md:flex items-center gap-8">

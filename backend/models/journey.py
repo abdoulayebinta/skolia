@@ -10,7 +10,7 @@ class JourneyStepModel(BaseModel):
     """Journey step model representing a single step in a learning journey."""
     step_type: str = Field(..., description="Step type: Preparation, Hook, Instruction, Application")
     resource_id: str = Field(..., description="ID of the resource for this step")
-    
+
     class Config:
         from_attributes = True
 
@@ -22,11 +22,13 @@ class JourneyModel(BaseModel):
     subject: str = Field(..., description="Subject area: Science, Math, English, French, History")
     grade: int = Field(..., ge=1, le=12, description="Grade level (1-12)")
     prompt: str = Field(..., description="Original educator prompt")
+    learning_objectives: List[str] = Field(default_factory=list, description="Learning objectives for this journey")
+    outcomes: List[str] = Field(default_factory=list, description="Expected learning outcomes")
     steps: List[JourneyStepModel] = Field(default_factory=list, description="Journey steps")
     educator_id: Optional[str] = None
     created_at: Optional[datetime] = None
     class_code: Optional[str] = None  # For sharing with students
-    
+
     class Config:
         from_attributes = True
         json_schema_extra = {

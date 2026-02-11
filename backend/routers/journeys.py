@@ -18,43 +18,44 @@ from schemas.journey import (
 from schemas.resource import ResourceResponse
 from schemas.educator import EducatorResponse
 from dependencies.auth import get_current_educator
-from services.journey_generator import analyze_prompt, score_resources, construct_journey
+from services.journey_generator import analyze_prompt, score_resources, construct_journey, generate_learning_objectives_and_outcomes
 from models.resource import Resource
 
 
 router = APIRouter(tags=["Journeys"])
 
 
-@router.post("/generate", response_model=JourneyResponse)
+@router.post("/generate", response_model=JourneyResponse, status_code=status.HTTP_201_CREATED)
 async def generate_journey(
     request: GenerateJourneyRequest,
     current_educator: EducatorResponse = Depends(get_current_educator)
 ) -> JourneyResponse:
     """
     Generate a structured learning journey from an educator's text prompt.
-    
+
     This endpoint:
     1. Analyzes the prompt to extract subject, grade, and keywords
     2. Queries the database for relevant resources
     3. Scores resources based on keyword matching and cultural relevance
     4. Constructs a 4-step journey (Preparation, Hook, Instruction, Application)
-    5. Returns the journey as a draft (not saved to DB)
-    
+    5. Saves the journey to the database
+    6. Returns the journey with its database ID
+
     Args:
         request: GenerateJourneyRequest with the educator's prompt
         current_educator: Current authenticated educator (from JWT)
-        
+
     Returns:
         JourneyResponse with the generated journey structure
-        
+
     Raises:
         HTTPException: If insufficient resources are found
     """
     db = get_database()
-    
+
     # Step 1: Analyze the prompt
     subject, grade, keywords = analyze_prompt(request.prompt)
-    
+
     # Step 2: Query database for resources matching subject and grade
     # Fetch student resources
     student_filter = {
@@ -62,20 +63,20 @@ async def generate_journey(
         "grade": grade,
         "audience": "Student"
     }
-    
+
     student_cursor = db.resources.find(student_filter)
     student_resources_data = await student_cursor.to_list(length=None)
-    
+
     # Fetch teacher resources
     teacher_filter = {
         "subject": subject,
         "grade": grade,
         "audience": "Teacher"
     }
-    
+
     teacher_cursor = db.resources.find(teacher_filter)
     teacher_resources_data = await teacher_cursor.to_list(length=None)
-    
+
     # Convert to Resource models
     student_resources = []
     for resource_data in student_resources_data:
@@ -96,7 +97,7 @@ async def generate_journey(
             created_at=resource_data.get("created_at"),
             updated_at=resource_data.get("updated_at")
         ))
-    
+
     teacher_resources = []
     for resource_data in teacher_resources_data:
         teacher_resources.append(Resource(
@@ -116,18 +117,21 @@ async def generate_journey(
             created_at=resource_data.get("created_at"),
             updated_at=resource_data.get("updated_at")
         ))
-    
+
     # Check if we have enough resources
     if len(student_resources) < 3:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Insufficient student resources found for {subject} Grade {grade}. Need at least 3, found {len(student_resources)}."
         )
-    
+
     # Step 3: Score and sort student resources
     scored_resources = score_resources(student_resources, keywords)
-    
-    # Step 4: Construct the journey
+
+    # Step 4: Generate learning objectives and outcomes
+    learning_objectives, outcomes = generate_learning_objectives_and_outcomes(request.prompt, subject, grade)
+
+    # Step 5: Construct the journey
     journey = construct_journey(
         scored_resources=scored_resources,
         teacher_resources=teacher_resources,
@@ -135,11 +139,11 @@ async def generate_journey(
         subject=subject,
         grade=grade
     )
-    
+
     # Step 5: Build response with full resource details
     # Create a map of resource_id -> Resource for quick lookup
     all_resources = {r.id: r for r in student_resources + teacher_resources}
-    
+
     # Build journey steps with full resource details
     journey_steps = []
     for step in journey.steps:
@@ -165,16 +169,36 @@ async def generate_journey(
                     updated_at=resource.updated_at
                 )
             ))
-    
-    # Return the journey response
+
+    # Save the journey to the database
+    journey_doc = {
+        "title": journey.title,
+        "subject": journey.subject,
+        "grade": journey.grade,
+        "prompt": request.prompt,
+        "learning_objectives": learning_objectives,
+        "outcomes": outcomes,
+        "steps": [{"step_type": step.step_type, "resource_id": step.resource_id} for step in journey.steps],
+        "educator_id": current_educator.id,
+        "created_at": datetime.utcnow(),
+        "class_code": None
+    }
+
+    # Insert into database
+    result = await db.journeys.insert_one(journey_doc)
+    journey_id = str(result.inserted_id)
+
+    # Return the journey response with database ID
     return JourneyResponse(
-        id=journey.id,
+        id=journey_id,
         title=journey.title,
         grade=journey.grade,
         subject=journey.subject,
+        learning_objectives=learning_objectives,
+        outcomes=outcomes,
         steps=journey_steps,
-        created_at=datetime.utcnow().isoformat() + "Z",
-        class_code=None  # Not assigned yet, will be assigned when saved
+        created_at=journey_doc["created_at"].isoformat() + "Z",
+        class_code=None
     )
 
 
@@ -185,21 +209,21 @@ async def create_journey(
 ) -> JourneyResponse:
     """
     Save a generated journey to the database.
-    
+
     This endpoint:
     1. Associates the journey with the current educator
     2. Inserts it into the journeys collection
     3. Returns the journey with its MongoDB ObjectId
-    
+
     Args:
         request: CreateJourneyRequest with journey data
         current_educator: Current authenticated educator (from JWT)
-        
+
     Returns:
         JourneyResponse with the created journey including DB ID
     """
     db = get_database()
-    
+
     # Prepare journey document
     journey_doc = {
         "title": request.title,
@@ -211,16 +235,16 @@ async def create_journey(
         "created_at": datetime.utcnow(),
         "class_code": None
     }
-    
+
     # Insert into database
     result = await db.journeys.insert_one(journey_doc)
     journey_id = str(result.inserted_id)
-    
+
     # Fetch resource details for response
     resource_ids = [step.resource_id for step in request.steps]
     resources_cursor = db.resources.find({"_id": {"$in": resource_ids}})
     resources_data = await resources_cursor.to_list(length=None)
-    
+
     # Create resource map
     resources_map = {}
     for resource_data in resources_data:
@@ -241,7 +265,7 @@ async def create_journey(
             created_at=resource_data.get("created_at"),
             updated_at=resource_data.get("updated_at")
         )
-    
+
     # Build journey steps with full resource details
     journey_steps = []
     for step in request.steps:
@@ -251,7 +275,7 @@ async def create_journey(
                 step_type=step.step_type,
                 resource=resource
             ))
-    
+
     return JourneyResponse(
         id=journey_id,
         title=request.title,
@@ -270,24 +294,24 @@ async def get_journey(
 ) -> JourneyResponse:
     """
     Retrieve a journey by ID.
-    
+
     This endpoint:
     1. Fetches the journey from the database
     2. Verifies the journey belongs to the current educator
     3. Returns the journey with full resource details
-    
+
     Args:
         id: Journey MongoDB ObjectId
         current_educator: Current authenticated educator (from JWT)
-        
+
     Returns:
         JourneyResponse with the journey data
-        
+
     Raises:
         HTTPException: If journey not found or doesn't belong to educator
     """
     db = get_database()
-    
+
     # Validate ObjectId format
     try:
         object_id = ObjectId(id)
@@ -296,28 +320,28 @@ async def get_journey(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Invalid journey ID format"
         )
-    
+
     # Fetch journey from database
     journey_data = await db.journeys.find_one({"_id": object_id})
-    
+
     if not journey_data:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Journey not found"
         )
-    
+
     # Verify ownership
     if journey_data.get("educator_id") != current_educator.id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You don't have permission to access this journey"
         )
-    
+
     # Fetch resource details
     resource_ids = [step["resource_id"] for step in journey_data["steps"]]
     resources_cursor = db.resources.find({"_id": {"$in": resource_ids}})
     resources_data = await resources_cursor.to_list(length=None)
-    
+
     # Create resource map
     resources_map = {}
     for resource_data in resources_data:
@@ -338,7 +362,7 @@ async def get_journey(
             created_at=resource_data.get("created_at"),
             updated_at=resource_data.get("updated_at")
         )
-    
+
     # Build journey steps with full resource details
     journey_steps = []
     for step in journey_data["steps"]:
@@ -348,12 +372,14 @@ async def get_journey(
                 step_type=step["step_type"],
                 resource=resource
             ))
-    
+
     return JourneyResponse(
         id=str(journey_data["_id"]),
         title=journey_data["title"],
         grade=journey_data["grade"],
         subject=journey_data["subject"],
+        learning_objectives=journey_data.get("learning_objectives", []),
+        outcomes=journey_data.get("outcomes", []),
         steps=journey_steps,
         created_at=journey_data["created_at"].isoformat() + "Z",
         class_code=journey_data.get("class_code")
@@ -368,26 +394,26 @@ async def update_journey(
 ) -> JourneyResponse:
     """
     Update a journey (e.g., swap resources).
-    
+
     This endpoint:
     1. Fetches the journey from the database
     2. Verifies ownership
     3. Updates the specified fields
     4. Returns the updated journey
-    
+
     Args:
         id: Journey MongoDB ObjectId
         request: UpdateJourneyRequest with fields to update
         current_educator: Current authenticated educator (from JWT)
-        
+
     Returns:
         JourneyResponse with the updated journey data
-        
+
     Raises:
         HTTPException: If journey not found or doesn't belong to educator
     """
     db = get_database()
-    
+
     # Validate ObjectId format
     try:
         object_id = ObjectId(id)
@@ -396,45 +422,45 @@ async def update_journey(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Invalid journey ID format"
         )
-    
+
     # Fetch journey from database
     journey_data = await db.journeys.find_one({"_id": object_id})
-    
+
     if not journey_data:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Journey not found"
         )
-    
+
     # Verify ownership
     if journey_data.get("educator_id") != current_educator.id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You don't have permission to update this journey"
         )
-    
+
     # Prepare update document
     update_doc = {}
     if request.title is not None:
         update_doc["title"] = request.title
     if request.steps is not None:
         update_doc["steps"] = [{"step_type": step.step_type, "resource_id": step.resource_id} for step in request.steps]
-    
+
     # Update in database
     if update_doc:
         await db.journeys.update_one(
             {"_id": object_id},
             {"$set": update_doc}
         )
-    
+
     # Fetch updated journey
     updated_journey = await db.journeys.find_one({"_id": object_id})
-    
+
     # Fetch resource details
     resource_ids = [step["resource_id"] for step in updated_journey["steps"]]
     resources_cursor = db.resources.find({"_id": {"$in": resource_ids}})
     resources_data = await resources_cursor.to_list(length=None)
-    
+
     # Create resource map
     resources_map = {}
     for resource_data in resources_data:
@@ -455,7 +481,7 @@ async def update_journey(
             created_at=resource_data.get("created_at"),
             updated_at=resource_data.get("updated_at")
         )
-    
+
     # Build journey steps with full resource details
     journey_steps = []
     for step in updated_journey["steps"]:
@@ -465,12 +491,14 @@ async def update_journey(
                 step_type=step["step_type"],
                 resource=resource
             ))
-    
+
     return JourneyResponse(
         id=str(updated_journey["_id"]),
         title=updated_journey["title"],
         grade=updated_journey["grade"],
         subject=updated_journey["subject"],
+        learning_objectives=updated_journey.get("learning_objectives", []),
+        outcomes=updated_journey.get("outcomes", []),
         steps=journey_steps,
         created_at=updated_journey["created_at"].isoformat() + "Z",
         class_code=updated_journey.get("class_code")
@@ -484,25 +512,25 @@ async def deploy_journey(
 ) -> dict:
     """
     Deploy a journey with a unique class code for student access.
-    
+
     This endpoint:
     1. Generates a random 6-character uppercase alphanumeric code
     2. Ensures uniqueness by checking the database
     3. Updates the journey with the code and deployed=True
     4. Returns the class code
-    
+
     Args:
         id: Journey MongoDB ObjectId
         current_educator: Current authenticated educator (from JWT)
-        
+
     Returns:
         dict with class_code
-        
+
     Raises:
         HTTPException: If journey not found or doesn't belong to educator
     """
     db = get_database()
-    
+
     # Validate ObjectId format
     try:
         object_id = ObjectId(id)
@@ -511,49 +539,49 @@ async def deploy_journey(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Invalid journey ID format"
         )
-    
+
     # Fetch journey from database
     journey_data = await db.journeys.find_one({"_id": object_id})
-    
+
     if not journey_data:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Journey not found"
         )
-    
+
     # Verify ownership
     if journey_data.get("educator_id") != current_educator.id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You don't have permission to deploy this journey"
         )
-    
+
     # Generate unique 6-character code
     max_attempts = 10
     class_code = None
-    
+
     for _ in range(max_attempts):
         # Generate random 6-character uppercase alphanumeric code
         code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
-        
+
         # Check if code already exists
         existing = await db.journeys.find_one({"class_code": code})
         if not existing:
             class_code = code
             break
-    
+
     if not class_code:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to generate unique class code. Please try again."
         )
-    
+
     # Update journey with class code and deployed status
     await db.journeys.update_one(
         {"_id": object_id},
         {"$set": {"class_code": class_code, "deployed": True}}
     )
-    
+
     return {"class_code": class_code}
 
 
@@ -561,46 +589,46 @@ async def deploy_journey(
 async def get_journey_by_code(code: str) -> JourneyResponse:
     """
     Retrieve a journey by class code (public endpoint for students).
-    
+
     This endpoint:
     1. Finds the journey by class_code
     2. Filters out teacher-only resources (audience == 'Teacher')
     3. Returns the filtered journey
-    
+
     This is a PUBLIC endpoint - no authentication required.
-    
+
     Args:
         code: The 6-character class code
-        
+
     Returns:
         JourneyResponse with student-accessible steps only
-        
+
     Raises:
         HTTPException: If journey not found or not deployed
     """
     db = get_database()
-    
+
     # Find journey by class code
     journey_data = await db.journeys.find_one({"class_code": code.upper()})
-    
+
     if not journey_data:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Journey not found with this code"
         )
-    
+
     # Check if journey is deployed
     if not journey_data.get("deployed", False):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Journey not found with this code"
         )
-    
+
     # Fetch resource details
     resource_ids = [step["resource_id"] for step in journey_data["steps"]]
     resources_cursor = db.resources.find({"_id": {"$in": resource_ids}})
     resources_data = await resources_cursor.to_list(length=None)
-    
+
     # Create resource map
     resources_map = {}
     for resource_data in resources_data:
@@ -621,7 +649,7 @@ async def get_journey_by_code(code: str) -> JourneyResponse:
             created_at=resource_data.get("created_at"),
             updated_at=resource_data.get("updated_at")
         )
-    
+
     # Build journey steps with full resource details, filtering out Teacher resources
     journey_steps = []
     for step in journey_data["steps"]:
@@ -631,12 +659,14 @@ async def get_journey_by_code(code: str) -> JourneyResponse:
                 step_type=step["step_type"],
                 resource=resource
             ))
-    
+
     return JourneyResponse(
         id=str(journey_data["_id"]),
         title=journey_data["title"],
         grade=journey_data["grade"],
         subject=journey_data["subject"],
+        learning_objectives=journey_data.get("learning_objectives", []),
+        outcomes=journey_data.get("outcomes", []),
         steps=journey_steps,
         created_at=journey_data["created_at"].isoformat() + "Z",
         class_code=journey_data.get("class_code")

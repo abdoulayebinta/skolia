@@ -35,16 +35,15 @@ interface EducatorData {
  * Login an educator
  */
 export async function login(credentials: LoginCredentials): Promise<void> {
-  const formData = new URLSearchParams();
-  formData.append('username', credentials.email);
-  formData.append('password', credentials.password);
-
   const response = await fetch(`${API_URL}/auth/login`, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Type': 'application/json',
     },
-    body: formData,
+    body: JSON.stringify({
+      email: credentials.email,
+      password: credentials.password,
+    }),
   });
 
   if (!response.ok) {
@@ -67,7 +66,7 @@ export async function login(credentials: LoginCredentials): Promise<void> {
  * Sign up a new educator
  */
 export async function signup(signupData: SignupData): Promise<void> {
-  const response = await fetch(`${API_URL}/auth/register`, {
+  const response = await fetch(`${API_URL}/auth/signup`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

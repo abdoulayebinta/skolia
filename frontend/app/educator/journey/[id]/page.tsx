@@ -186,16 +186,16 @@ export default function JourneyPreview() {
       const loadAlternatives = async () => {
         setLoadingAlternatives(true);
         try {
-          // Use mock data instead of API call to avoid fetch errors
           const currentResource = journey.steps[swappingStepIndex].resource;
+          const response = await fetchResources({
+            subject: journey.subject,
+            audience: 'Student',
+            grade: journey.grade,
+            limit: 20
+          });
           
-          // Filter mock library for alternatives
-          const alternatives = resourceLibrary.filter(r => 
-            r.subject === journey.subject && 
-            r.audience === 'Student' && 
-            r.id !== currentResource.id
-          );
-          
+          // Filter out the current resource
+          const alternatives = response.resources.filter(r => r.id !== currentResource.id);
           setAlternativeResources(alternatives);
         } catch (error) {
           console.error('Failed to load alternative resources:', error);
@@ -368,7 +368,7 @@ export default function JourneyPreview() {
                                   e.stopPropagation();
                                   setSwappingStepIndex(index);
                                 }}
-                                className="bg-[#00b6ff] text-white hover:bg-[#0095d1] border-0 shadow-lg flex-1 font-bold"
+                                className="bg-white text-[#0F172A] hover:bg-slate-100 border-0 shadow-lg flex-1 font-bold"
                                 size="sm"
                               >
                                 <RefreshCw className="w-4 h-4 mr-2" /> Swap

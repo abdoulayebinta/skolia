@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { X, Wand2, Check, Users, ArrowRight, BookOpen, Languages, Gauge, FileText, Loader2, ChevronRight, Split, BrainCircuit } from 'lucide-react';
+import { X, Wand2, Check, Users, ArrowRight, BookOpen, Languages, Gauge, FileText, Loader2, ChevronRight, Split, BrainCircuit, Sparkles } from 'lucide-react';
 import { Button, Badge } from './ui/shared';
 import { Resource } from '../lib/mockData';
 

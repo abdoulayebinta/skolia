@@ -349,14 +349,14 @@ export default function JourneyPreview() {
                         </div>
                         
                         {/* Hover Overlay */}
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col items-center justify-center backdrop-blur-sm gap-2 p-4">
-                          <div className="flex gap-2 w-full justify-center">
+                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col items-center justify-center backdrop-blur-sm gap-3 p-4">
+                          <div className="flex gap-3 w-full justify-center">
                             <Button 
                               onClick={(e) => {
                                 e.stopPropagation();
                                 openPreview(step.resource, index);
                               }}
-                              className="bg-white/20 text-white hover:bg-white/30 border border-white/50 backdrop-blur-md flex-1"
+                              className="bg-white text-[#0F172A] hover:bg-slate-100 border-0 shadow-lg flex-1 font-bold"
                               size="sm"
                             >
                               <Eye className="w-4 h-4 mr-2" /> Preview
@@ -368,7 +368,7 @@ export default function JourneyPreview() {
                                   e.stopPropagation();
                                   setSwappingStepIndex(index);
                                 }}
-                                className="bg-white text-[#0F172A] hover:bg-slate-100 border-0 shadow-lg flex-1"
+                                className="bg-[#00b6ff] text-white hover:bg-[#0095d1] border-0 shadow-lg flex-1 font-bold"
                                 size="sm"
                               >
                                 <RefreshCw className="w-4 h-4 mr-2" /> Swap
@@ -382,7 +382,7 @@ export default function JourneyPreview() {
                                 e.stopPropagation();
                                 openDifferentiation(step.resource);
                               }}
-                              className="bg-[#00b6ff] text-white hover:bg-[#0095d1] border-0 shadow-lg w-full"
+                              className="bg-white/20 text-white hover:bg-white/30 border border-white/50 backdrop-blur-md w-full font-medium"
                               size="sm"
                             >
                               <Split className="w-4 h-4 mr-2" /> Differentiate

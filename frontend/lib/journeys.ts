@@ -1,204 +1,64 @@
-/**
- * Journey management functions
- */
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+import { LearningJourney, generateJourneyFromPrompt, saveJourney, getJourneyByCode } from './mockData';
 
-// Get auth token from localStorage
-const getAuthToken = (): string | null => {
-  if (typeof window === 'undefined') return null;
-  return localStorage.getItem('auth_token');
+// Re-export types from mockData for consistency
+export type { LearningJourney as Journey };
+
+// Mock API functions that wrap the mockData utilities
+// In a real app, these would make fetch requests to the backend
+
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+export const generateJourney = async (prompt: string): Promise<LearningJourney> => {
+  // Simulate API call to AI service
+  return await generateJourneyFromPrompt(prompt);
 };
 
-export interface Resource {
-  id: string;
-  title: string;
-  description: string;
-  type: string;
-  audience: string;
-  duration: string;
-  subject: string;
-  grade: number;
-  tags: string[];
-  thumbnail?: string;
-  content_url: string;
-  alignment_score?: number;
-  cultural_relevance?: boolean;
-}
+export const createJourney = async (journeyData: any): Promise<LearningJourney> => {
+  await delay(800); // Simulate network
+  
+  // In the mock implementation, we just return the data as is, 
+  // maybe adding an ID if it wasn't there (though generateJourneyFromPrompt adds one)
+  return {
+    ...journeyData,
+    id: journeyData.id || `journey-${Date.now()}`,
+    createdAt: new Date().toISOString()
+  };
+};
 
-export interface JourneyStep {
-  step_type: string;
-  resource: Resource;
-}
-
-export interface Journey {
-  id: string;
-  title: string;
-  description?: string;
-  subject: string;
-  grade: number;
-  duration_weeks?: number;
-  learning_objectives?: string[];
-  outcomes?: string[];
-  steps: JourneyStep[];
-  class_code?: string;
-  created_at: string;
-  updated_at?: string;
-}
-
-/**
- * Generate a new learning journey
- */
-export async function generateJourney(prompt: string): Promise<Journey> {
-  const token = getAuthToken();
-  if (!token) {
-    throw new Error('Authentication required');
+export const getJourney = async (id: string): Promise<LearningJourney> => {
+  await delay(500);
+  
+  // Try to find in localStorage first (for the prototype)
+  if (typeof window !== 'undefined') {
+    // We need to search through all keys or use a specific convention
+    // For this prototype, we'll try to find it in the draft storage
+    const draft = localStorage.getItem(`journey_draft_${id}`);
+    if (draft) return JSON.parse(draft);
+    
+    // Or try to find by ID if we saved it differently
+    // This is a simplification for the prototype
   }
+  
+  // Fallback to generating a mock one if not found (for demo purposes)
+  // In a real app this would throw 404
+  return await generateJourneyFromPrompt("Demo Journey");
+};
 
-  const response = await fetch(`${API_URL}/journeys/generate`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({
-      prompt,
-    }),
-  });
+export const updateJourney = async (id: string, updates: any): Promise<LearningJourney> => {
+  await delay(500);
+  
+  // In a real app, this would PATCH /journeys/:id
+  // For prototype, we just return the updated mock
+  const current = await getJourney(id);
+  return { ...current, ...updates };
+};
 
-  if (!response.ok) {
-    const error = await response
-      .json()
-      .catch(() => ({ detail: 'Failed to generate journey' }));
-    throw new Error(error.detail || 'Failed to generate journey');
-  }
+export const deployJourney = async (id: string): Promise<string> => {
+  await delay(1000);
+  
+  // Use the mockData helper to generate a code and save to localStorage
+  const journey = await getJourney(id);
+  return saveJourney(journey);
+};
 
-  return await response.json();
-}
-
-/**
- * Get a specific journey by ID
- */
-export async function getJourney(journeyId: string): Promise<Journey> {
-  const token = getAuthToken();
-  if (!token) {
-    throw new Error('Authentication required');
-  }
-
-  const response = await fetch(`${API_URL}/journeys/${journeyId}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  if (!response.ok) {
-    const error = await response
-      .json()
-      .catch(() => ({ detail: 'Failed to fetch journey' }));
-    throw new Error(error.detail || 'Failed to fetch journey');
-  }
-
-  return await response.json();
-}
-
-/**
- * Get a journey by student access code (no auth required)
- */
-export async function getJourneyByCode(code: string): Promise<Journey> {
-  const response = await fetch(`${API_URL}/journeys/code/${code}`);
-
-  if (!response.ok) {
-    const error = await response
-      .json()
-      .catch(() => ({ detail: 'Invalid class code' }));
-    throw new Error(error.detail || 'Invalid class code');
-  }
-
-  return await response.json();
-}
-
-/**
- * Update a journey
- */
-export async function updateJourney(
-  journeyId: string,
-  updates: {
-    title?: string;
-    description?: string;
-    steps?: Array<{ step_type: string; resource_id: string }>;
-  },
-): Promise<Journey> {
-  const token = getAuthToken();
-  if (!token) {
-    throw new Error('Authentication required');
-  }
-
-  const response = await fetch(`${API_URL}/journeys/${journeyId}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(updates),
-  });
-
-  if (!response.ok) {
-    const error = await response
-      .json()
-      .catch(() => ({ detail: 'Failed to update journey' }));
-    throw new Error(error.detail || 'Failed to update journey');
-  }
-
-  return await response.json();
-}
-
-/**
- * Deploy a journey and get a class code
- */
-export async function deployJourney(journeyId: string): Promise<string> {
-  const token = getAuthToken();
-  if (!token) {
-    throw new Error('Authentication required');
-  }
-
-  const response = await fetch(`${API_URL}/journeys/${journeyId}/deploy`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  if (!response.ok) {
-    const error = await response
-      .json()
-      .catch(() => ({ detail: 'Failed to deploy journey' }));
-    throw new Error(error.detail || 'Failed to deploy journey');
-  }
-
-  const data = await response.json();
-  return data.class_code;
-}
-
-/**
- * Delete a journey
- */
-export async function deleteJourney(journeyId: string): Promise<void> {
-  const token = getAuthToken();
-  if (!token) {
-    throw new Error('Authentication required');
-  }
-
-  const response = await fetch(`${API_URL}/journeys/${journeyId}`, {
-    method: 'DELETE',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  if (!response.ok) {
-    const error = await response
-      .json()
-      .catch(() => ({ detail: 'Failed to delete journey' }));
-    throw new Error(error.detail || 'Failed to delete journey');
-  }
-}

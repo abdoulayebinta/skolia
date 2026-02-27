@@ -186,16 +186,16 @@ export default function JourneyPreview() {
       const loadAlternatives = async () => {
         setLoadingAlternatives(true);
         try {
+          // Use mock data instead of API call to avoid fetch errors
           const currentResource = journey.steps[swappingStepIndex].resource;
-          const response = await fetchResources({
-            subject: journey.subject,
-            audience: 'Student',
-            grade: journey.grade,
-            limit: 20
-          });
           
-          // Filter out the current resource
-          const alternatives = response.resources.filter(r => r.id !== currentResource.id);
+          // Filter mock library for alternatives
+          const alternatives = resourceLibrary.filter(r => 
+            r.subject === journey.subject && 
+            r.audience === 'Student' && 
+            r.id !== currentResource.id
+          );
+          
           setAlternativeResources(alternatives);
         } catch (error) {
           console.error('Failed to load alternative resources:', error);

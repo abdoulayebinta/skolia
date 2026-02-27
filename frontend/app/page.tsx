@@ -648,6 +648,7 @@ export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [classCode, setClassCode] = useState('');
   const [language, setLanguage] = useState<'EN' | 'FR'>('EN');
+  const [mounted, setMounted] = useState(false);
   
   // Signup Form State
   const [email, setEmail] = useState('');
@@ -656,6 +657,11 @@ export default function LandingPage() {
   const [signupSuccess, setSignupSuccess] = useState(false);
 
   const t = translations[language];
+
+  // Handle hydration mismatch by only rendering after mount
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Check if user is logged in and redirect to educator dashboard
   useEffect(() => {
@@ -714,6 +720,11 @@ export default function LandingPage() {
   const toggleLanguage = () => {
     setLanguage(prev => prev === 'EN' ? 'FR' : 'EN');
   };
+
+  // Prevent hydration mismatch by rendering a simple loading state or nothing until mounted
+  if (!mounted) {
+    return <div className="min-h-screen bg-[#F8FAFC]"></div>;
+  }
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-[#0F172A] overflow-hidden selection:bg-[#00b6ff]/30 flex flex-col font-sans">

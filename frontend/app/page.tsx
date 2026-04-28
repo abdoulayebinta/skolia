@@ -17,10 +17,10 @@ const translations = {
       signup: "Sign Up Free"
     },
     hero: {
-      badge: "IDÉLLIA: AI-Powered Learning Journeys",
+      badge: "SCHOLIA: AI-Powered Learning Journeys",
       title: "Transform Passive Content into",
       titleHighlight: "Active Learning",
-      subtitle: "Generate curriculum-aligned learning journeys in under 2 minutes with IDÉLLIA. Secure, culturally relevant, and designed for the modern classroom.",
+      subtitle: "Generate curriculum-aligned learning journeys in under 2 minutes with SCHOLIA. Secure, culturally relevant, and designed for the modern classroom.",
       headline: "Create a Classroom-Ready Lesson in",
       headlineHighlight: "Under 2 Minutes",
       subtext: "AI-powered lesson creation that saves teachers 5+ hours per week.",
@@ -65,7 +65,7 @@ const translations = {
     socialProof: {
       title: "Trusted by Educators Across North America",
       testimonials: [
-        { quote: "IDÉLLIA saves me 6 hours a week — I can finally focus on teaching instead of searching for resources.", role: "Grade 5 Teacher" },
+        { quote: "SCHOLIA saves me 6 hours a week — I can finally focus on teaching instead of searching for resources.", role: "Grade 5 Teacher" },
         { quote: "The cultural relevance of the content is unmatched. My students finally see themselves in the curriculum.", role: "High School History" },
         { quote: "Setting up a lesson takes minutes, not hours. The AI suggestions are surprisingly accurate.", role: "French Immersion" }
       ]
@@ -108,7 +108,7 @@ const translations = {
     },
     footer: {
       poweredBy: "Powered by IDÉLLO",
-      text: "IDÉLLIA utilizes the certified 15,000+ resource library of IDÉLLO to ensure 100% pedagogical safety.",
+      text: "SCHOLIA utilizes the certified 15,000+ resource library of IDÉLLO to ensure 100% pedagogical safety.",
       privacy: "Privacy",
       terms: "Terms"
     }
@@ -121,10 +121,10 @@ const translations = {
       signup: "Inscription Gratuite"
     },
     hero: {
-      badge: "IDÉLLIA : Parcours d'apprentissage propulsés par l'IA",
+      badge: "SCHOLIA : Parcours d'apprentissage propulsés par l'IA",
       title: "Transformez le contenu passif en",
       titleHighlight: "Apprentissage Actif",
-      subtitle: "Générez des parcours d'apprentissage alignés sur le programme en moins de 2 minutes avec IDÉLLIA. Sécurisé, culturellement pertinent et conçu pour la classe moderne.",
+      subtitle: "Générez des parcours d'apprentissage alignés sur le programme en moins de 2 minutes avec SCHOLIA. Sécurisé, culturellement pertinent et conçu pour la classe moderne.",
       headline: "Créez une leçon prête pour la classe en",
       headlineHighlight: "Moins de 2 Minutes",
       subtext: "Création de leçons assistée par IA qui fait gagner aux enseignants plus de 5 heures par semaine.",
@@ -169,7 +169,7 @@ const translations = {
     socialProof: {
       title: "Reconnu par les éducateurs à travers l'Amérique du Nord",
       testimonials: [
-        { quote: "IDÉLLIA me fait gagner 6 heures par semaine — je peux enfin me concentrer sur l'enseignement au lieu de chercher des ressources.", role: "Enseignante 5e année" },
+        { quote: "SCHOLIA me fait gagner 6 heures par semaine — je peux enfin me concentrer sur l'enseignement au lieu de chercher des ressources.", role: "Enseignante 5e année" },
         { quote: "La pertinence culturelle du contenu est inégalée. Mes élèves se voient enfin dans le programme.", role: "Histoire Secondaire" },
         { quote: "Préparer une leçon prend des minutes, pas des heures. Les suggestions de l'IA sont étonnamment précises.", role: "Immersion Française" }
       ]
@@ -212,7 +212,7 @@ const translations = {
     },
     footer: {
       poweredBy: "Propulsé par IDÉLLO",
-      text: "IDÉLLIA utilise la bibliothèque de plus de 15 000 ressources certifiées d'IDÉLLO pour garantir une sécurité pédagogique à 100%.",
+      text: "SCHOLIA utilise la bibliothèque de plus de 15 000 ressources certifiées d'IDÉLLO pour garantir une sécurité pédagogique à 100%.",
       privacy: "Confidentialité",
       terms: "Conditions"
     }
@@ -1090,7 +1090,7 @@ export default function LandingPage() {
           </div>
           
           <div className="mt-8 flex justify-center items-center gap-6 text-sm text-slate-400">
-             <span>&copy; {new Date().getFullYear()} IDÉLLIA</span>
+             <span>&copy; {new Date().getFullYear()} SCHOLIA</span>
              <a href="#" className="hover:text-[#00b6ff] transition-colors">{t.footer.privacy}</a>
              <a href="#" className="hover:text-[#00b6ff] transition-colors">{t.footer.terms}</a>
           </div>
